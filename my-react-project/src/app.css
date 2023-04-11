@@ -1,0 +1,54 @@
+.app {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .centered-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .word-container {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .guess-container {
+    margin-top: 20px;
+    text-align: center;
+  }
+  
+  .keyboard-container {
+    margin-top: 20px;
+  }
+  
+  .new-game-container {
+    margin-top: 20px;
+  }
+
+  .keyboard-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .win-message-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .full-quote {
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .highlighted {
+    background-color: yellow;
+  }
