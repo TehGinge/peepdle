@@ -22,6 +22,10 @@ export const App = ({ quote }) => {
 		document.cookie = `dailyWins=${dailyWins}`;
 	}, [dailyWins]);
 
+  useEffect(() => {
+		startNewGame();
+	}, []);
+
 	const startNewGame = () => {
 		const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
 		const words = randomQuote.quote
