@@ -12,9 +12,6 @@ export const quotes = [
 const maxGuesses = 8;
 
 export const WordDisplay = ({ currentWord, currentGuesses, quote }) => {
-  const strippedQuote = quote.replace(/[^\w\s]/g, ''); // Strip out punctuation
-  const words = strippedQuote.split(' ');
-
   const displayQuote = quote.split(' ').map((word, index) => {
     const strippedWord = word.replace(/[^\w\s]/g, ''); // Strip out punctuation
     const isCurrentWord = strippedWord.toLowerCase() === currentWord.toLowerCase();

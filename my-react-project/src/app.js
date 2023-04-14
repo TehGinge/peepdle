@@ -30,7 +30,7 @@ export const App = ({ quote }) => {
     const words = randomQuote.quote
       .replace(/[^\w\s]/gi, "") // Remove punctuation
       .split(" ")
-      .filter((word) => word.length >= 5);
+      .filter((word) => word.length >= 4);
     const selectedWord = words[Math.floor(Math.random() * words.length)];
     setCurrentWord(selectedWord.toLowerCase());
     setCurrentGuesses([]);
@@ -82,7 +82,6 @@ export const App = ({ quote }) => {
       <div className="centered-container">
       {currentQuote && currentQuote.quote && (
   <div className="word-container">
-    <CurrentWordDisplay currentWord={currentWord} />
     <WordDisplay currentWord={currentWord} currentGuesses={currentGuesses} quote={currentQuote.quote} />
   </div>
 )}
@@ -103,15 +102,6 @@ export const App = ({ quote }) => {
             <div className="win-message">You won today's peepdle!</div>
             {currentQuote && currentQuote.quote && (
               <div className="full-quote">
-                {currentQuote.quote.split(" ").map((word, index) => {
-                  const isHighlighted = word.toLowerCase() === currentWord;
-                  return (
-                    <span key={index}>
-                      <span className={isHighlighted ? "highlighted" : ""}>{word}</span>
-                      {index !== currentQuote.quote.split(" ").length - 1 && " "}
-                    </span>
-                  );
-                })}
               </div>
             )}
           </div>
