@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Keyboard } from "./keyboard";
 import { useEffect } from "react";
-import { quotes, CurrentWordDisplay, WordDisplay, GuessesDisplay, NewGameButton } from "./main";
+import { CurrentWordDisplay, WordDisplay, GuessesDisplay, NewGameButton } from "./main";
+import quotes from './peepdle-data.json';
 
 export const App = ({ quote }) => {
 	const [currentWord, setCurrentWord] = useState("");
@@ -27,7 +28,7 @@ export const App = ({ quote }) => {
 	}, []);
 
 	const startNewGame = () => {
-		const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+		const randomQuote = quotes.results[Math.floor(Math.random() * quotes.count)];
 		const words = randomQuote.quote
 			.replace(/[^\w\s]/gi, "") // Remove punctuation
 			.split(" ")
@@ -41,6 +42,7 @@ export const App = ({ quote }) => {
 		setCompleted(false);
 		setGameStarted(true);
 	};
+	
 
 	const makeGuess = (guess) => {
 		if (guess.length === 1 && /^[a-zA-Z]$/.test(guess)) {
@@ -81,6 +83,7 @@ export const App = ({ quote }) => {
 			<div className="centered-container">
 				{currentQuote && currentQuote.quote && (
 					<div className="word-container">
+						<CurrentWordDisplay currentWord={currentWord} />
 						<WordDisplay currentWord={currentWord} currentGuesses={currentGuesses} quote={currentQuote.quote} />
 					</div>
 				)}
