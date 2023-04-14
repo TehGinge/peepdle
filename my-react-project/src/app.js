@@ -1,110 +1,186 @@
 import React, { useState } from "react";
 import { Keyboard } from "./keyboard";
 import { useEffect } from "react";
-import { CurrentWordDisplay, WordDisplay, GuessesDisplay, NewGameButton } from "./main";
-import quotes from './peepdle-data.json';
+import {
+  CurrentWordDisplay,
+  WordDisplay,
+  GuessesDisplay,
+  NewGameButton,
+} from "./main";
+import quotes from "./peepdle-data.json";
+import excludedWords from "./excludedWords";
+import GridInput from "./gridInput";
 
-export const App = ({ quote }) => {
-	const [currentWord, setCurrentWord] = useState("");
-	const [currentGuesses, setCurrentGuesses] = useState([]);
-	const [numGuesses, setNumGuesses] = useState(0);
-	const [completed, setCompleted] = useState(false);
-	const [dailyWins, setDailyWins] = useState(0);
-	const [currentQuote, setCurrentQuote] = useState({});
-	const [failed, setFailed] = useState(false);
-	const [gameStarted, setGameStarted] = useState(false);
-
-	useEffect(() => {
-		const cookieValue = document.cookie.replace(/(?:(?:^|.*;\s*)dailyWins\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-		setDailyWins(parseInt(cookieValue) || 0);
-	}, []);
-
-	useEffect(() => {
-		document.cookie = `dailyWins=${dailyWins}`;
-	}, [dailyWins]);
+export const App = ({ maxGuesses }) => {
+  const [currentWord, setCurrentWord] = useState("");
+  const [currentGuesses, setCurrentGuesses] = useState([]);
+  const [numGuesses, setNumGuesses] = useState(0);
+  const [completed, setCompleted] = useState(false);
+  const [dailyWins, setDailyWins] = useState(0);
+  const [currentQuote, setCurrentQuote] = useState({});
+  const [failed, setFailed] = useState(false);
+  const [gameStarted, setGameStarted] = useState(false);
+  const [gridInput, setGridInput] = useState(
+	Array.from({ length: maxGuesses }, () => Array(currentWord.length).fill(""))
+  );
+  
+  useEffect(() => {
+	setGridInput(
+	  Array.from({ length: maxGuesses }, () => Array(currentWord.length).fill(""))
+	);
+  }, [currentWord]);  
 
   useEffect(() => {
-		startNewGame();
-	}, []);
+    const cookieValue = document.cookie.replace(
+      /(?:(?:^|.*;\s*)dailyWins\s*\=\s*([^;]*).*$)|^.*$/,
+      "$1"
+    );
+    setDailyWins(parseInt(cookieValue) || 0);
+  }, []);
 
-	const startNewGame = () => {
-		const randomQuote = quotes.results[Math.floor(Math.random() * quotes.count)];
-		const words = randomQuote.quote
-			.replace(/[^\w\s]/gi, "") // Remove punctuation
-			.split(" ")
-			.filter((word) => word.length >= 4);
-		const selectedWord = words[Math.floor(Math.random() * words.length)];
-		setCurrentWord(selectedWord.toLowerCase());
-		setCurrentGuesses([]);
-		setCurrentQuote(randomQuote);
-		setNumGuesses(0);
-		setFailed(false);
-		setCompleted(false);
-		setGameStarted(true);
-	};
-	
+  useEffect(() => {
+    document.cookie = `dailyWins=${dailyWins}`;
+  }, [dailyWins]);
 
-	const makeGuess = (guess) => {
-		if (guess.length === 1 && /^[a-zA-Z]$/.test(guess)) {
-			const lowercaseGuess = guess.toLowerCase();
-			if (!currentGuesses.includes(lowercaseGuess)) {
-				setCurrentGuesses([...currentGuesses, lowercaseGuess]);
-				if (!currentWord.includes(lowercaseGuess)) {
-					setNumGuesses(numGuesses + 1);
-				}
-			}
-			const buttons = document.querySelectorAll(".keyboard-button");
-			buttons.forEach((button) => {
-				if (button.innerText === lowercaseGuess) {
-					button.disabled = true;
-				}
-			});
-			const guessedWord = currentWord.split("").filter((letter) => currentGuesses.includes(letter));
-			if (guessedWord.length === currentWord.length) {
-				setCompleted(true);
-				setDailyWins(dailyWins + 1);
-			}
-		}
-	};
+  useEffect(() => {
+    startNewGame();
+  }, []);
 
-	const handleKeyboardClick = (letter) => {
-		makeGuess(letter);
-	};
+  const startNewGame = () => {
+    // Log invalid quotes
+    quotes.results.forEach((quoteObj, index) => {
+      if (!quoteObj.quote) {
+        console.log(`Invalid quote at index ${index}:`, quoteObj);
+      }
+    });
 
-	const guessedWord = currentWord.split("").filter((letter) => currentGuesses.includes(letter));
+    const validQuotes = quotes.results.filter((quoteObj) => quoteObj.quote);
 
-	if (guessedWord.length === currentWord.length && !completed) {
-		setCompleted(true);
-		setDailyWins(dailyWins + 1);
-	}
+    const filteredQuotes = validQuotes.filter((quoteObj) => {
+      const wordsInQuote = quoteObj.quote.toLowerCase().split(/\W+/);
+      const excludedWordSet = new Set(excludedWords);
+      return !wordsInQuote.some((word) => excludedWordSet.has(word));
+    });
 
-	return (
-		<div className="app">
-			<div className="centered-container">
-				{currentQuote && currentQuote.quote && (
-					<div className="word-container">
-						<CurrentWordDisplay currentWord={currentWord} />
-						<WordDisplay currentWord={currentWord} currentGuesses={currentGuesses} quote={currentQuote.quote} />
-					</div>
-				)}
-				<div className="guess-container">
-					<GuessesDisplay numGuesses={numGuesses} />
-					<input type="text" maxLength={1} onKeyUp={(e) => makeGuess(e.target.value)} className="hidden-input" />
-				</div>
-				<div className="keyboard-container">
-					<Keyboard onClick={handleKeyboardClick} guessedLetters={currentGuesses} />
-				</div>
-				<div className="win-tally">Daily wins: {dailyWins}</div>
-				{gameStarted && completed && (
-					<div className="win-message-container">
-						<div className="win-message">You won today's peepdle!</div>
-						{currentQuote && currentQuote.quote && <div className="full-quote"></div>}
-					</div>
-				)}
-				<div className="new-game-container">
-					<NewGameButton onClick={startNewGame} />
-				</div>
-			</div>
-		</div>
-	);
+    const randomQuote =
+      filteredQuotes[Math.floor(Math.random() * filteredQuotes.length)];
+    const words = randomQuote.quote
+      .replace(/[^\w\s]/gi, "") // Remove punctuation
+      .split(" ")
+      .filter((word) => word.length >= 4);
+    const selectedWord = words[Math.floor(Math.random() * words.length)];
+    setCurrentWord(selectedWord.toLowerCase());
+    setCurrentGuesses([]);
+    setCurrentQuote(randomQuote);
+    setNumGuesses(0);
+    setFailed(false);
+    setCompleted(false);
+    setGameStarted(true);
+  };
+
+  const makeWordGuess = (guess) => {
+    if (guess.length === currentWord.length && /^[a-zA-Z]+$/.test(guess)) {
+      const lowercaseGuess = guess.toLowerCase().split("");
+      setCurrentGuesses([...currentGuesses, ...lowercaseGuess]);
+
+      const guessedWord = currentWord
+        .split("")
+        .filter((letter) => lowercaseGuess.includes(letter));
+      if (guessedWord.length === currentWord.length) {
+        setCompleted(true);
+        setDailyWins(dailyWins + 1);
+      } else {
+        setNumGuesses(numGuesses + 1);
+      }
+    }
+  };
+
+  const makeGuess = (guess) => {
+    if (guess.length === currentWord.length && /^[a-zA-Z]+$/.test(guess)) {
+      const lowercaseGuess = guess.toLowerCase().split("");
+      const newGuesses = [...currentGuesses, ...lowercaseGuess];
+      setCurrentGuesses(newGuesses);
+
+      const buttons = document.querySelectorAll(".keyboard-button");
+      buttons.forEach((button) => {
+        if (newGuesses.includes(button.innerText.toLowerCase())) {
+          button.disabled = true;
+        }
+      });
+
+      const guessedWord = currentWord
+        .split("")
+        .filter((letter) => newGuesses.includes(letter));
+      if (guessedWord.length === currentWord.length) {
+        setCompleted(true);
+        setDailyWins(dailyWins + 1);
+      } else {
+        setNumGuesses(numGuesses + 1);
+      }
+    }
+  };
+
+  const handleKeyboardClick = (letter) => {
+    makeGuess(letter);
+  };
+
+  const guessedWord = currentWord
+    .split("")
+    .filter((letter) => currentGuesses.includes(letter));
+
+  if (guessedWord.length === currentWord.length && !completed) {
+    setCompleted(true);
+    setDailyWins(dailyWins + 1);
+  }
+
+  return (
+    <div className="app">
+      <div className="centered-container">
+        {currentQuote && currentQuote.quote && (
+          <div className="word-container">
+            <CurrentWordDisplay currentWord={currentWord} />
+            <WordDisplay
+              currentWord={currentWord}
+              currentGuesses={currentGuesses}
+              quote={currentQuote.quote}
+            />
+          </div>
+        )}
+        <div className="guess-container">
+          <GuessesDisplay numGuesses={numGuesses} />
+          <GridInput
+            gridInput={gridInput}
+            setGridInput={setGridInput}
+            maxGuesses={maxGuesses}
+            makeGuess={makeGuess}
+			makeWordGuess={makeWordGuess}
+			currentWord={currentWord}
+          />
+        </div>
+        <div className="keyboard-container">
+          <Keyboard
+            onClick={handleKeyboardClick}
+            guessedLetters={currentGuesses}
+          />
+        </div>
+        <div className="win-tally">Daily wins: {dailyWins}</div>
+        {gameStarted && completed && (
+          <div className="win-message-container">
+            <div className="win-message">You won today's peepdle!</div>
+            {currentQuote && currentQuote.quote && (
+              <div className="full-quote">
+                {`"${currentQuote.quote}" - ${currentQuote.person}`}
+              </div>
+            )}
+            {currentQuote && currentQuote.episode && (
+              <div className="episode">Episode: {currentQuote.episode}</div>
+            )}
+          </div>
+        )}
+        <div className="new-game-container">
+          <NewGameButton onClick={startNewGame} />
+        </div>
+      </div>
+    </div>
+  );
 };
