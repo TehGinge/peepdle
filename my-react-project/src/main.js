@@ -39,7 +39,13 @@ export const WordDisplay = ({ currentWord, currentGuesses, quote }) => {
 
 
 export const GuessesDisplay = ({ numGuesses }) => {
-  return <div id="guesses">{maxGuesses - numGuesses} guesses remaining</div>;
+  const guessesRemaining = maxGuesses - numGuesses;
+
+  if (guessesRemaining <= 0) {
+    return <div id="guesses">Sorry, you have no guesses left!</div>;
+  }
+
+  return <div id="guesses">{guessesRemaining} guesses remaining</div>;
 };
 
 export const NewGameButton = ({ onClick }) => {
