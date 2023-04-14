@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const webpack = require("webpack");
 
 module.exports = {
   entry: './src/main.js',
@@ -10,7 +11,8 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: "src/index.html", // to import index.html file inside index.js
-    })
+    }),
+    new webpack.HotModuleReplacementPlugin(),
   ],
   module: {
     rules: [
@@ -31,8 +33,16 @@ module.exports = {
     extensions: ['.js', '.jsx']
   },
   devServer: {
-    static: path.join(__dirname, 'dist'),
+    headers: {
+      'Cache-Control': 'no-store',
+    },
+    static: {
+      directory: path.join(__dirname, 'dist'),
+      watch: true,
+    },
     compress: true,
-    port: 9000
-  }
+    port: 9000,
+    hot: true, // Enable Hot Module Replacement
+  },
+  cache: false
 };
