@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Keyboard } from "./keyboard";
 import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 import {
   CurrentWordDisplay,
   WordDisplay,
@@ -17,7 +18,7 @@ export const App = ({ maxGuesses }) => {
   const [currentGuesses, setCurrentGuesses] = useState([]);
   const [numGuesses, setNumGuesses] = useState(0);
   const [completed, setCompleted] = useState(false);
-  const [dailyWinStreak, setDailyWinStreak] = useState(0);
+  const [winStreak, setWinStreak] = useState(0);
   const [currentQuote, setCurrentQuote] = useState({});
   const [failed, setFailed] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
@@ -36,19 +37,25 @@ export const App = ({ maxGuesses }) => {
 
   useEffect(() => {
     const cookieValue = document.cookie.replace(
-      /(?:(?:^|.*;\s*)dailyWinStreak\s*\=\s*([^;]*).*$)|^.*$/,
+      /(?:(?:^|.*;\s*)winStreak\s*\=\s*([^;]*).*$)|^.*$/,
       "$1"
     );
-    setDailyWinStreak(parseInt(cookieValue) || 0);
+    setWinStreak(parseInt(cookieValue) || 0);
   }, []);
 
   useEffect(() => {
-    document.cookie = `dailyWinStreak=${dailyWinStreak}`;
-  }, [dailyWinStreak]);
+    document.cookie = `winStreak=${winStreak}`;
+  }, [winStreak]);
 
   useEffect(() => {
     startNewGame();
   }, []);
+
+  useLayoutEffect(() => {
+    if (gameStarted && inputRefs[0][0].current) {
+      inputRefs[0][0].current.focus();
+    }
+  }, [gameStarted, inputRefs]);
 
   const startNewGame = () => {
     // Log invalid quotes
@@ -70,9 +77,15 @@ export const App = ({ maxGuesses }) => {
     const excludedWordSet = new Set(
       excludedWords.map((word) => word.toLowerCase())
     );
+
     const filteredWords = words.filter(
       (word) => !excludedWordSet.has(word.toLowerCase())
     );
+
+    if (filteredWords.length === 0) {
+      startNewGame();
+      return;
+    }
 
     const selectedWord =
       filteredWords[Math.floor(Math.random() * filteredWords.length)];
@@ -104,7 +117,8 @@ export const App = ({ maxGuesses }) => {
 
       if (guess.toLowerCase() === currentWord) {
         setCompleted(true);
-        setDailyWinStreak(dailyWinStreak + 1);
+        setWinStreak(winStreak + 1);
+        return true; // Return true when the guess is correct
       } else {
         setNumGuesses(numGuesses + 1);
 
@@ -113,10 +127,19 @@ export const App = ({ maxGuesses }) => {
         }
       }
     }
+
+    return false; // Return false when the guess is not correct or the function conditions are not met
   };
 
+  const inputRefs = Array.from({ length: maxGuesses }, () =>
+    Array.from({ length: currentWord.length }, () => React.createRef())
+  );
+
   const handleKeyboardClick = (letter) => {
-    makeGuess(letter);
+    makeGuess(letter, numGuesses);
+    if (numGuesses < gridInput.length - 1) {
+      inputRefs[numGuesses + 1][0].current.focus();
+    }
   };
 
   const revealAnswer = () => {
@@ -127,7 +150,7 @@ export const App = ({ maxGuesses }) => {
   };
 
   const resetStreak = () => {
-    setDailyWinStreak(0);
+    setWinStreak(0);
   };
 
   const guessedWord = currentWord
@@ -139,16 +162,17 @@ export const App = ({ maxGuesses }) => {
       <div className="centered-container">
         {currentQuote && currentQuote.quote && (
           <div className="word-container">
-            <WordDisplay
-              currentWord={currentWord}
-              currentGuesses={currentGuesses}
-              quote={currentQuote.quote}
-              gaveUp={gaveUp}
-            />
+            <div className="quote-container">
+              <WordDisplay
+                currentWord={currentWord}
+                currentGuesses={currentGuesses}
+                quote={currentQuote.quote}
+                gaveUp={gaveUp}
+              />
+            </div>
           </div>
         )}
         <div className="guess-container">
-          <GuessesDisplay numGuesses={numGuesses} />
           <GridInput
             gridInput={gridInput}
             setGridInput={setGridInput}
@@ -157,7 +181,10 @@ export const App = ({ maxGuesses }) => {
             currentWord={currentWord}
             numGuesses={numGuesses}
             isGameWon={completed}
+            inputRefs={inputRefs}
+            handleKeyboardClick={handleKeyboardClick}
           />
+          <GuessesDisplay numGuesses={numGuesses} />
         </div>
         <div className="keyboard-container">
           <Keyboard
@@ -165,7 +192,7 @@ export const App = ({ maxGuesses }) => {
             guessedLetters={currentGuesses}
           />
         </div>
-        <div className="win-tally">Daily win streak: {dailyWinStreak}</div>
+        <div className="win-tally">Win streak: {winStreak}</div>
         {gameStarted && completed && (
           <div className="win-message-container">
             {!gaveUp && (
@@ -177,15 +204,17 @@ export const App = ({ maxGuesses }) => {
               </div>
             )}
             {currentQuote && currentQuote.episode && (
-              <div className="episode">Episode: {currentQuote.episode}</div>
+              <div className="episode"> {currentQuote.episode}</div>
             )}
           </div>
         )}
-        <div className="new-game-container">
-          <NewGameButton onClick={startNewGame} />
-        </div>
-        <div className="give-up-container">
+      </div>
+      <div className="button-container">
+        <div className="left-button">
           <GiveUpButton onClick={revealAnswer} />
+        </div>
+        <div className="right-button">
+          <NewGameButton onClick={startNewGame} />
         </div>
       </div>
     </div>

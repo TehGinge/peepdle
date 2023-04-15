@@ -8,21 +8,27 @@ const GridInput = ({
   currentWord,
   numGuesses,
   isGameWon,
+  handleKeyboardClick,
+  inputRefs,
 }) => {
   const handleInputChange = (rowIndex, colIndex, value) => {
+    value = value.toUpperCase();
     const newGridInput = [...gridInput];
     newGridInput[rowIndex][colIndex] = value;
     setGridInput(newGridInput);
-
+  
     if (value.length === 1 && /^[a-zA-Z]$/.test(value)) {
       makeGuess(value, rowIndex);
       const nextColIndex = colIndex + 1;
       if (nextColIndex < currentWord.length) {
         inputRefs[rowIndex][nextColIndex].current.focus();
+      } else if (rowIndex + 1 < gridInput.length && rowIndex === numGuesses - 1) {
+        inputRefs[rowIndex + 1][0].current.focus();
       }
+      handleKeyboardClick(value);
     }
   };
-
+  
   const handleKeyPress = (event, rowIndex) => {
     if (event.key === "Enter") {
       const inputValues = gridInput[rowIndex].filter(
@@ -37,6 +43,15 @@ const GridInput = ({
     }
   };
 
+  // Restrict input to just letters
+  const handleInputRestriction = (event) => {
+    const value = event.target.value;
+    if (!/^[a-zA-Z]$/.test(value)) {
+      event.target.value = "";
+    }
+  };
+
+  // Allow backspace to work with the gridbox
   const handleKeyDown = (rowIndex, colIndex, event) => {
     if (event.key === "Backspace" && gridInput[rowIndex][colIndex] === "") {
       const prevColIndex = colIndex - 1;
@@ -45,10 +60,6 @@ const GridInput = ({
       }
     }
   };
-
-  const inputRefs = Array.from({ length: gridInput.length }, () =>
-    Array.from({ length: currentWord.length }, () => React.createRef())
-  );
 
   return (
     <div className="grid-input-container">
@@ -89,6 +100,7 @@ const GridInput = ({
                 }
                 onKeyDown={(e) => handleKeyDown(rowIndex, colIndex, e)}
                 onKeyPress={(e) => handleKeyPress(e, rowIndex)}
+                onInput={handleInputRestriction}
                 className={`grid-input-cell ${gridCellStyle}`}
                 ref={inputRefs[rowIndex][colIndex]}
                 disabled={rowIndex !== numGuesses}

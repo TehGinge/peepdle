@@ -1,84 +1,195 @@
+body {
+  background: rgb(49, 48, 48);
+  font-size: 20px;
+  color: white;
+}
+
 .app {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 30px;
+}
+
+.centered-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 600px;
+}
+
+.word-container {
+  margin-bottom: 20px;
+  text-align: center;
+  max-height: 200vh;
+}
+
+.word-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.word-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.word-container::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+.word-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.guess-container {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.keyboard-container {
+  margin-top: 100px;
+  margin-bottom: 50px;
+  transform: scale(1.5);
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.win-message-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.quote-container {
+  max-height: 200px;
+  overflow: auto;
+  margin-bottom: 50px;
+}
+
+.full-quote {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.highlighted {
+  background-color: yellow;
+}
+
+.grid-input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.grid-input-row {
+  display: flex;
+}
+
+.grid-input-cell {
+  width: 50px;
+  height: 50px;
+  margin: 2px;
+  text-align: center;
+  background-color: #999;
+  color: white;
+  font-size: 30px
+}
+
+.correct-position {
+  background-color: green;
+  color: white;
+}
+
+.in-word {
+  background-color: orange;
+  color: white;
+}
+
+.button-container {
+  position: fixed;
+  bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 25%;
+  padding: 0 50px;
+  margin: 0 50px;
+  transform: scale(1.5);
+}
+
+.left-button {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.right-button {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 480px) {
+  body {
+    background: rgb(49, 48, 48);
+    font-size: 20px;
+    color: white;
   }
-  
-  .centered-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .word-container {
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  .guess-container {
-    margin-top: 20px;
-    text-align: center;
-  }
-  
-  .keyboard-container {
-    margin-top: 20px;
-  }
-  
-  .new-game-container {
-    margin-top: 20px;
+
+  .win-message-container {
+    margin-top: 10px;
   }
 
   .keyboard-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .win-message-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-  }
-  
-  .full-quote {
-    margin-top: 10px;
-    text-align: center;
+    margin-bottom: 5px;
   }
 
-  .highlighted {
-    background-color: yellow;
+  .win-tally{
+    margin-bottom: 500px;
+    margin-top: 500px;
+  }
+
+  .grid-input-cell {
+    width: 20px;
+    height: 20px;
+    margin: 2px;
+    font-size: 14px;
   }
 
   .grid-input-container {
     display: flex;
     flex-direction: column;
-  }
-  
-  .grid-input-row {
-    display: flex;
-  }
-  
-  .grid-input-cell {
-    width: 20px;
-    height: 20px;
-    margin: 2px;
-    text-align: center;
-    background-color: #999;
-    color: white;
+    align-items: center;
   }
 
-  .correct-position {
-    background-color: green;
-    color: white;
+  .fixed-container {
+    height: auto;
+    padding-bottom: 70px;
   }
-  
-  .in-word {
-    background-color: orange;
-    color: white;
+
+  .centered-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 600px;
   }
-  
-  
+
+  .word-container {
+    margin-bottom: 20px;
+    text-align: center;
+    max-height: 40vh;
+    overflow-y: auto;
+    font-size: 16px;
+  }
+
+  .left-button , .right-button  {
+    max-width: 90%;
+  }
+}
+
