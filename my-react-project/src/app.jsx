@@ -21,14 +21,16 @@ export const App = ({ maxGuesses }) => {
   const [failed, setFailed] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [gridInput, setGridInput] = useState(
-	Array.from({ length: maxGuesses }, () => Array(currentWord.length).fill(""))
+    Array.from({ length: maxGuesses }, () => Array(currentWord.length).fill(""))
   );
-  
+
   useEffect(() => {
-	setGridInput(
-	  Array.from({ length: maxGuesses }, () => Array(currentWord.length).fill(""))
-	);
-  }, [currentWord]);  
+    setGridInput(
+      Array.from({ length: maxGuesses }, () =>
+        Array(currentWord.length).fill("")
+      )
+    );
+  }, [currentWord]);
 
   useEffect(() => {
     const cookieValue = document.cookie.replace(
@@ -67,7 +69,7 @@ export const App = ({ maxGuesses }) => {
     const words = randomQuote.quote
       .replace(/[^\w\s]/gi, "") // Remove punctuation
       .split(" ")
-      .filter((word) => word.length >= 4);
+      .filter((word) => word.length >= 3);
     const selectedWord = words[Math.floor(Math.random() * words.length)];
     setCurrentWord(selectedWord.toLowerCase());
     setCurrentGuesses([]);
@@ -78,25 +80,12 @@ export const App = ({ maxGuesses }) => {
     setGameStarted(true);
   };
 
-  const makeWordGuess = (guess) => {
-    if (guess.length === currentWord.length && /^[a-zA-Z]+$/.test(guess)) {
-      const lowercaseGuess = guess.toLowerCase().split("");
-      setCurrentGuesses([...currentGuesses, ...lowercaseGuess]);
-
-      const guessedWord = currentWord
-        .split("")
-        .filter((letter) => lowercaseGuess.includes(letter));
-      if (guessedWord.length === currentWord.length) {
-        setCompleted(true);
-        setDailyWins(dailyWins + 1);
-      } else {
-        setNumGuesses(numGuesses + 1);
-      }
-    }
-  };
-
-  const makeGuess = (guess) => {
-    if (guess.length === currentWord.length && /^[a-zA-Z]+$/.test(guess)) {
+  const makeGuess = (guess, rowIndex) => {
+    if (
+      guess.length === currentWord.length &&
+      /^[a-zA-Z]+$/.test(guess) &&
+      rowIndex === numGuesses
+    ) {
       const lowercaseGuess = guess.toLowerCase().split("");
       const newGuesses = [...currentGuesses, ...lowercaseGuess];
       setCurrentGuesses(newGuesses);
@@ -138,7 +127,6 @@ export const App = ({ maxGuesses }) => {
       <div className="centered-container">
         {currentQuote && currentQuote.quote && (
           <div className="word-container">
-            <CurrentWordDisplay currentWord={currentWord} />
             <WordDisplay
               currentWord={currentWord}
               currentGuesses={currentGuesses}
@@ -153,8 +141,8 @@ export const App = ({ maxGuesses }) => {
             setGridInput={setGridInput}
             maxGuesses={maxGuesses}
             makeGuess={makeGuess}
-			makeWordGuess={makeWordGuess}
-			currentWord={currentWord}
+            currentWord={currentWord}
+            numGuesses={numGuesses}
           />
         </div>
         <div className="keyboard-container">

@@ -1,5 +1,8 @@
 const excludedWords = [
     "and",
+    "the",
+    "him",
+    "her",
     "but",
     "what",
     "or",
