@@ -7,9 +7,6 @@ yarn-error.log*
 # Build artifacts
 build/
 dist/
-*.js
-*.css
-*.map
 
 # Environment variables
 .env.local
