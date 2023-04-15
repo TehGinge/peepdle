@@ -6,20 +6,20 @@ import quotes from "./peepdle-data.json";
 
 const maxGuesses = 5;
 
-export const WordDisplay = ({ currentWord, currentGuesses, quote }) => {
+export const WordDisplay = ({ currentWord, currentGuesses, quote, gaveUp }) => {
   const wordsArray = quote.split(" ");
   const displayQuote = wordsArray.map((word, index) => {
-    const strippedWord = word.replace(/[^\w\s]/g, ""); // Strip out punctuation
+    const strippedWord = word.replace(/[^\w\s']/g, ""); // Keep apostrophes in the word
     const isCurrentWord =
-      strippedWord.toLowerCase() === currentWord.toLowerCase();
+      strippedWord.toLowerCase().replace(/'/g, "") === currentWord.toLowerCase(); // Compare words without apostrophes
 
     const displayWord = isCurrentWord
       ? strippedWord
           .split("")
           .map((letter, letterIndex) =>
-            currentGuesses[letterIndex] === letter.toLowerCase()
+            !gaveUp && currentGuesses[letterIndex] === letter.toLowerCase()
               ? letter.toUpperCase()
-              : "_ "
+              : letter === "'" ? "'" : "_ " // Keep apostrophes in the word
           )
           .join("")
       : word;
@@ -39,6 +39,7 @@ export const WordDisplay = ({ currentWord, currentGuesses, quote }) => {
   return <div id="word-display">{displayQuote}</div>;
 };
 
+
 export const GuessesDisplay = ({ numGuesses }) => {
   const guessesRemaining = maxGuesses - numGuesses;
 
@@ -51,6 +52,14 @@ export const GuessesDisplay = ({ numGuesses }) => {
 
 export const NewGameButton = ({ onClick }) => {
   return <button onClick={onClick}>New Game</button>;
+};
+
+export const GiveUpButton = ({ onClick }) => {
+  return (
+    <button className="give-up-button" onClick={onClick}>
+      Give Up?
+    </button>
+  );
 };
 
 // Only for debug use - remove later

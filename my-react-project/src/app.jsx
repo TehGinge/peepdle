@@ -6,6 +6,7 @@ import {
   WordDisplay,
   GuessesDisplay,
   NewGameButton,
+  GiveUpButton,
 } from "./main";
 import quotes from "./peepdle-data.json";
 import excludedWords from "./excludedWords";
@@ -16,10 +17,11 @@ export const App = ({ maxGuesses }) => {
   const [currentGuesses, setCurrentGuesses] = useState([]);
   const [numGuesses, setNumGuesses] = useState(0);
   const [completed, setCompleted] = useState(false);
-  const [dailyWins, setDailyWins] = useState(0);
+  const [dailyWinStreak, setDailyWinStreak] = useState(0);
   const [currentQuote, setCurrentQuote] = useState({});
   const [failed, setFailed] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
+  const [gaveUp, setGaveUp] = useState(false);
   const [gridInput, setGridInput] = useState(
     Array.from({ length: maxGuesses }, () => Array(currentWord.length).fill(""))
   );
@@ -34,15 +36,15 @@ export const App = ({ maxGuesses }) => {
 
   useEffect(() => {
     const cookieValue = document.cookie.replace(
-      /(?:(?:^|.*;\s*)dailyWins\s*\=\s*([^;]*).*$)|^.*$/,
+      /(?:(?:^|.*;\s*)dailyWinStreak\s*\=\s*([^;]*).*$)|^.*$/,
       "$1"
     );
-    setDailyWins(parseInt(cookieValue) || 0);
+    setDailyWinStreak(parseInt(cookieValue) || 0);
   }, []);
 
   useEffect(() => {
-    document.cookie = `dailyWins=${dailyWins}`;
-  }, [dailyWins]);
+    document.cookie = `dailyWinStreak=${dailyWinStreak}`;
+  }, [dailyWinStreak]);
 
   useEffect(() => {
     startNewGame();
@@ -65,7 +67,9 @@ export const App = ({ maxGuesses }) => {
       .split(" ")
       .filter((word) => word.length >= 4); // Set minimum word length
 
-    const excludedWordSet = new Set(excludedWords);
+    const excludedWordSet = new Set(
+      excludedWords.map((word) => word.toLowerCase())
+    );
     const filteredWords = words.filter(
       (word) => !excludedWordSet.has(word.toLowerCase())
     );
@@ -100,9 +104,13 @@ export const App = ({ maxGuesses }) => {
 
       if (guess.toLowerCase() === currentWord) {
         setCompleted(true);
-        setDailyWins(dailyWins + 1);
+        setDailyWinStreak(dailyWinStreak + 1);
       } else {
         setNumGuesses(numGuesses + 1);
+
+        if (numGuesses + 1 >= maxGuesses) {
+          resetStreak();
+        }
       }
     }
   };
@@ -111,14 +119,20 @@ export const App = ({ maxGuesses }) => {
     makeGuess(letter);
   };
 
+  const revealAnswer = () => {
+    setCompleted(true);
+    setGaveUp(true);
+    setCurrentGuesses(currentWord.split(""));
+    resetStreak();
+  };
+
+  const resetStreak = () => {
+    setDailyWinStreak(0);
+  };
+
   const guessedWord = currentWord
     .split("")
     .filter((letter) => currentGuesses.includes(currentWord));
-
-  if (guessedWord.length === currentWord.length && !completed) {
-    setCompleted(true);
-    setDailyWins(dailyWins + 1);
-  }
 
   return (
     <div className="app">
@@ -129,6 +143,7 @@ export const App = ({ maxGuesses }) => {
               currentWord={currentWord}
               currentGuesses={currentGuesses}
               quote={currentQuote.quote}
+              gaveUp={gaveUp}
             />
           </div>
         )}
@@ -150,10 +165,12 @@ export const App = ({ maxGuesses }) => {
             guessedLetters={currentGuesses}
           />
         </div>
-        <div className="win-tally">Daily wins: {dailyWins}</div>
+        <div className="win-tally">Daily win streak: {dailyWinStreak}</div>
         {gameStarted && completed && (
           <div className="win-message-container">
-            <div className="win-message">You won today's peepdle!</div>
+            {!gaveUp && (
+              <div className="win-message">You won today's peepdle!</div>
+            )}
             {currentQuote && currentQuote.quote && (
               <div className="full-quote">
                 {`"${currentQuote.quote}" - ${currentQuote.person}`}
@@ -166,6 +183,9 @@ export const App = ({ maxGuesses }) => {
         )}
         <div className="new-game-container">
           <NewGameButton onClick={startNewGame} />
+        </div>
+        <div className="give-up-container">
+          <GiveUpButton onClick={revealAnswer} />
         </div>
       </div>
     </div>
