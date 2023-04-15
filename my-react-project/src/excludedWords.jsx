@@ -119,7 +119,10 @@ const excludedWords = [
   "down",
   "make",
   "take",
-  "isnt"
+  "isnt",
+  "whats",
+  "wasnt",
+  "want"
 ];
 
 export default excludedWords;

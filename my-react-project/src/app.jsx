@@ -21,14 +21,16 @@ export const App = ({ maxGuesses }) => {
   const [failed, setFailed] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [gridInput, setGridInput] = useState(
-	Array.from({ length: maxGuesses }, () => Array(currentWord.length).fill(""))
+    Array.from({ length: maxGuesses }, () => Array(currentWord.length).fill(""))
   );
-  
+
   useEffect(() => {
-	setGridInput(
-	  Array.from({ length: maxGuesses }, () => Array(currentWord.length).fill(""))
-	);
-  }, [currentWord]);  
+    setGridInput(
+      Array.from({ length: maxGuesses }, () =>
+        Array(currentWord.length).fill("")
+      )
+    );
+  }, [currentWord]);
 
   useEffect(() => {
     const cookieValue = document.cookie.replace(
@@ -57,42 +59,46 @@ export const App = ({ maxGuesses }) => {
     const validQuotes = quotes.results.filter((quoteObj) => quoteObj.quote);
 
     const randomQuote =
-    validQuotes[Math.floor(Math.random() * validQuotes.length)];
-  const words = randomQuote.quote
-    .replace(/[^\w\s]/gi, "") // Remove punctuation
-    .split(" ")
-    .filter((word) => word.length >= 4); // Set minimum word length
-  
-  const excludedWordSet = new Set(excludedWords);
-  const filteredWords = words.filter((word) => !excludedWordSet.has(word.toLowerCase()));
-  
-  const selectedWord = filteredWords[Math.floor(Math.random() * filteredWords.length)];
-  setCurrentWord(selectedWord.toLowerCase());
-  setCurrentGuesses([]);
-  setCurrentQuote(randomQuote);
-  setNumGuesses(0);
-  setFailed(false);
-  setCompleted(false);
-  setGameStarted(true);
+      validQuotes[Math.floor(Math.random() * validQuotes.length)];
+    const words = randomQuote.quote
+      .replace(/[^\w\s]/gi, "") // Remove punctuation
+      .split(" ")
+      .filter((word) => word.length >= 4); // Set minimum word length
+
+    const excludedWordSet = new Set(excludedWords);
+    const filteredWords = words.filter(
+      (word) => !excludedWordSet.has(word.toLowerCase())
+    );
+
+    const selectedWord =
+      filteredWords[Math.floor(Math.random() * filteredWords.length)];
+    setCurrentWord(selectedWord.toLowerCase());
+    setCurrentGuesses([]);
+    setCurrentQuote(randomQuote);
+    setNumGuesses(0);
+    setFailed(false);
+    setCompleted(false);
+    setGameStarted(true);
   };
 
   const makeGuess = (guess, rowIndex) => {
-    if (guess.length === currentWord.length && /^[a-zA-Z]+$/.test(guess) && rowIndex === numGuesses) {
-      const lowercaseGuess = guess.toLowerCase().split("");
-      const newGuesses = [...currentGuesses, ...lowercaseGuess];
-      setCurrentGuesses(newGuesses);
-  
+    if (
+      guess.length === currentWord.length &&
+      /^[a-zA-Z]+$/.test(guess) &&
+      rowIndex === numGuesses
+    ) {
+      const lowercaseGuess = guess.toLowerCase();
+
+      setCurrentGuesses([...currentGuesses, lowercaseGuess]);
+
       const buttons = document.querySelectorAll(".keyboard-button");
       buttons.forEach((button) => {
-        if (newGuesses.includes(button.innerText.toLowerCase())) {
+        if (currentGuesses.includes(button.innerText.toLowerCase())) {
           button.disabled = true;
         }
       });
-  
-      const guessedWord = currentWord
-        .split("")
-        .filter((letter) => newGuesses.includes(letter));
-      if (guessedWord.length === currentWord.length) {
+
+      if (guess.toLowerCase() === currentWord) {
         setCompleted(true);
         setDailyWins(dailyWins + 1);
       } else {
@@ -107,7 +113,7 @@ export const App = ({ maxGuesses }) => {
 
   const guessedWord = currentWord
     .split("")
-    .filter((letter) => currentGuesses.includes(letter));
+    .filter((letter) => currentGuesses.includes(currentWord));
 
   if (guessedWord.length === currentWord.length && !completed) {
     setCompleted(true);
@@ -133,8 +139,9 @@ export const App = ({ maxGuesses }) => {
             setGridInput={setGridInput}
             maxGuesses={maxGuesses}
             makeGuess={makeGuess}
-			currentWord={currentWord}
-      numGuesses={numGuesses}
+            currentWord={currentWord}
+            numGuesses={numGuesses}
+            isGameWon={completed}
           />
         </div>
         <div className="keyboard-container">

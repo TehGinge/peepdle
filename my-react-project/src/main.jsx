@@ -12,14 +12,17 @@ export const WordDisplay = ({ currentWord, currentGuesses, quote }) => {
     const strippedWord = word.replace(/[^\w\s]/g, ""); // Strip out punctuation
     const isCurrentWord =
       strippedWord.toLowerCase() === currentWord.toLowerCase();
-    const displayWord = strippedWord
-      .split("")
-      .map((letter) =>
-        currentGuesses.includes(letter.toLowerCase())
-          ? letter.toUpperCase()
-          : "_ "
-      )
-      .join("");
+
+    const displayWord = isCurrentWord
+      ? strippedWord
+          .split("")
+          .map((letter, letterIndex) =>
+            currentGuesses[letterIndex] === letter.toLowerCase()
+              ? letter.toUpperCase()
+              : "_ "
+          )
+          .join("")
+      : word;
 
     return (
       <span key={index}>

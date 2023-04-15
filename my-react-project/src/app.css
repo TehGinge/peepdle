@@ -67,5 +67,18 @@
     height: 20px;
     margin: 2px;
     text-align: center;
+    background-color: #999;
+    color: white;
   }
+
+  .correct-position {
+    background-color: green;
+    color: white;
+  }
+  
+  .in-word {
+    background-color: orange;
+    color: white;
+  }
+  
   

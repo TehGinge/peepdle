@@ -7,6 +7,7 @@ const GridInput = ({
   makeGuess,
   currentWord,
   numGuesses,
+  isGameWon,
 }) => {
   const handleInputChange = (rowIndex, colIndex, value) => {
     const newGridInput = [...gridInput];
@@ -24,7 +25,9 @@ const GridInput = ({
 
   const handleKeyPress = (event, rowIndex) => {
     if (event.key === "Enter") {
-      const inputValues = gridInput[rowIndex].filter((value) => value && value.trim() !== "");
+      const inputValues = gridInput[rowIndex].filter(
+        (value) => value && value.trim() !== ""
+      );
       if (inputValues.length === currentWord.length) {
         makeGuess(inputValues.join(""), rowIndex);
         if (rowIndex + 1 < gridInput.length) {
@@ -51,22 +54,47 @@ const GridInput = ({
     <div className="grid-input-container">
       {gridInput.map((row, rowIndex) => (
         <div className="grid-input-row" key={`row-${rowIndex}`}>
-          {row.map((cell, colIndex) => (
-            <input
-              type="text"
-              maxLength={1}
-              value={cell}
-              key={`cell-${rowIndex}-${colIndex}`}
-              onChange={(e) =>
-                handleInputChange(rowIndex, colIndex, e.target.value)
+          {row.map((cell, colIndex) => {
+            const currentLetter = gridInput[rowIndex][colIndex];
+            let gridCellStyle = "";
+
+            if (rowIndex < numGuesses) {
+              if (
+                currentLetter.toLowerCase() ===
+                currentWord[colIndex].toLowerCase()
+              ) {
+                gridCellStyle = "correct-position";
+              } else if (
+                currentWord.toLowerCase().includes(currentLetter.toLowerCase())
+              ) {
+                gridCellStyle = "in-word";
               }
-              onKeyDown={(e) => handleKeyDown(rowIndex, colIndex, e)}
-              onKeyPress={(e) => handleKeyPress(e, rowIndex)}
-              className="grid-input-cell"
-              ref={inputRefs[rowIndex][colIndex]}
-              disabled={rowIndex !== numGuesses}
-            />
-          ))}
+            } else if (isGameWon) {
+              if (
+                currentLetter.toLowerCase() ===
+                currentWord[colIndex].toLowerCase()
+              ) {
+                gridCellStyle = "correct-position";
+              }
+            }
+
+            return (
+              <input
+                type="text"
+                maxLength={1}
+                value={cell}
+                key={`cell-${rowIndex}-${colIndex}`}
+                onChange={(e) =>
+                  handleInputChange(rowIndex, colIndex, e.target.value)
+                }
+                onKeyDown={(e) => handleKeyDown(rowIndex, colIndex, e)}
+                onKeyPress={(e) => handleKeyPress(e, rowIndex)}
+                className={`grid-input-cell ${gridCellStyle}`}
+                ref={inputRefs[rowIndex][colIndex]}
+                disabled={rowIndex !== numGuesses}
+              />
+            );
+          })}
         </div>
       ))}
     </div>
