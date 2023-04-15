@@ -21,16 +21,14 @@ export const App = ({ maxGuesses }) => {
   const [failed, setFailed] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [gridInput, setGridInput] = useState(
-    Array.from({ length: maxGuesses }, () => Array(currentWord.length).fill(""))
+	Array.from({ length: maxGuesses }, () => Array(currentWord.length).fill(""))
   );
-
+  
   useEffect(() => {
-    setGridInput(
-      Array.from({ length: maxGuesses }, () =>
-        Array(currentWord.length).fill("")
-      )
-    );
-  }, [currentWord]);
+	setGridInput(
+	  Array.from({ length: maxGuesses }, () => Array(currentWord.length).fill(""))
+	);
+  }, [currentWord]);  
 
   useEffect(() => {
     const cookieValue = document.cookie.replace(
@@ -58,45 +56,39 @@ export const App = ({ maxGuesses }) => {
 
     const validQuotes = quotes.results.filter((quoteObj) => quoteObj.quote);
 
-    const filteredQuotes = validQuotes.filter((quoteObj) => {
-      const wordsInQuote = quoteObj.quote.toLowerCase().split(/\W+/);
-      const excludedWordSet = new Set(excludedWords);
-      return !wordsInQuote.some((word) => excludedWordSet.has(word));
-    });
-
     const randomQuote =
-      filteredQuotes[Math.floor(Math.random() * filteredQuotes.length)];
-    const words = randomQuote.quote
-      .replace(/[^\w\s]/gi, "") // Remove punctuation
-      .split(" ")
-      .filter((word) => word.length >= 3);
-    const selectedWord = words[Math.floor(Math.random() * words.length)];
-    setCurrentWord(selectedWord.toLowerCase());
-    setCurrentGuesses([]);
-    setCurrentQuote(randomQuote);
-    setNumGuesses(0);
-    setFailed(false);
-    setCompleted(false);
-    setGameStarted(true);
+    validQuotes[Math.floor(Math.random() * validQuotes.length)];
+  const words = randomQuote.quote
+    .replace(/[^\w\s]/gi, "") // Remove punctuation
+    .split(" ")
+    .filter((word) => word.length >= 4); // Set minimum word length
+  
+  const excludedWordSet = new Set(excludedWords);
+  const filteredWords = words.filter((word) => !excludedWordSet.has(word.toLowerCase()));
+  
+  const selectedWord = filteredWords[Math.floor(Math.random() * filteredWords.length)];
+  setCurrentWord(selectedWord.toLowerCase());
+  setCurrentGuesses([]);
+  setCurrentQuote(randomQuote);
+  setNumGuesses(0);
+  setFailed(false);
+  setCompleted(false);
+  setGameStarted(true);
   };
 
   const makeGuess = (guess, rowIndex) => {
-    if (
-      guess.length === currentWord.length &&
-      /^[a-zA-Z]+$/.test(guess) &&
-      rowIndex === numGuesses
-    ) {
+    if (guess.length === currentWord.length && /^[a-zA-Z]+$/.test(guess) && rowIndex === numGuesses) {
       const lowercaseGuess = guess.toLowerCase().split("");
       const newGuesses = [...currentGuesses, ...lowercaseGuess];
       setCurrentGuesses(newGuesses);
-
+  
       const buttons = document.querySelectorAll(".keyboard-button");
       buttons.forEach((button) => {
         if (newGuesses.includes(button.innerText.toLowerCase())) {
           button.disabled = true;
         }
       });
-
+  
       const guessedWord = currentWord
         .split("")
         .filter((letter) => newGuesses.includes(letter));
@@ -141,8 +133,8 @@ export const App = ({ maxGuesses }) => {
             setGridInput={setGridInput}
             maxGuesses={maxGuesses}
             makeGuess={makeGuess}
-            currentWord={currentWord}
-            numGuesses={numGuesses}
+			currentWord={currentWord}
+      numGuesses={numGuesses}
           />
         </div>
         <div className="keyboard-container">
