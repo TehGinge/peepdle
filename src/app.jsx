@@ -18,7 +18,6 @@ const AppUnstyled = ({ className, maxGuesses }) => {
 	const [completed, setCompleted] = useState(false);
 	const [winStreak, setWinStreak] = useState(0);
 	const [currentQuote, setCurrentQuote] = useState({});
-	const [failed, setFailed] = useState(false);
 	const [gameStarted, setGameStarted] = useState(false);
 	const [gaveUp, setGaveUp] = useState(false);
 	const [gridInput, setGridInput] = useState(Array.from({ length: maxGuesses }, () => Array(currentWord.length).fill("")));
@@ -66,7 +65,7 @@ const AppUnstyled = ({ className, maxGuesses }) => {
 
 		const filteredWords = words.filter(
 			(word) => !excludedWordSet.has(word.toLowerCase())
-			// && word.length <= 7 // Set maximum word length
+			&& word.length <= 8 // Set maximum word length
 		);
 
 		if (filteredWords.length === 0) {
@@ -79,7 +78,6 @@ const AppUnstyled = ({ className, maxGuesses }) => {
 		setCurrentGuesses([]);
 		setCurrentQuote(randomQuote);
 		setNumGuesses(0);
-		setFailed(false);
 		setCompleted(false);
 		setGameStarted(true);
 	};
@@ -106,7 +104,7 @@ const AppUnstyled = ({ className, maxGuesses }) => {
 
 				if (numGuesses + 1 >= maxGuesses) {
 					resetStreak();
-					revealAnswer(); // Add this line - Reveal the answer when there are no guesses remaining
+					revealAnswer(); // Reveal the answer when there are no guesses remaining
 				}
 			}
 		}
@@ -117,20 +115,46 @@ const AppUnstyled = ({ className, maxGuesses }) => {
 	const inputRefs = Array.from({ length: maxGuesses }, () => Array.from({ length: currentWord.length }, () => React.createRef()));
 
 	const handleKeyboardClick = (letter, disable = true) => {
-		makeGuess(letter, numGuesses);
+		if (gaveUp) {
+		  return;
+		}
+	  
+		const newGridInput = [...gridInput];
+		const currentRow = newGridInput[numGuesses];
+		const colIndex = currentRow.findIndex((value) => !value);
+		if (colIndex === -1) {
+		  return;
+		}
+	  
+		newGridInput[numGuesses][colIndex] = letter.toUpperCase();
+		setGridInput(newGridInput);
+	  
+		if (colIndex === currentWord.length - 1) {
+		  const inputValues = newGridInput[numGuesses].filter((value) => value && value.trim() !== "");
+		  const isCorrect = makeGuess(inputValues.join(""), numGuesses);
+		  if (isCorrect) {
+			return;
+		  }
+		}
+	  
 		if (numGuesses < gridInput.length - 1) {
+		  const nextColIndex = colIndex + 1;
+		  if (nextColIndex < currentWord.length) {
+			inputRefs[numGuesses][nextColIndex].current.focus();
+		  } else {
 			inputRefs[numGuesses + 1][0].current.focus();
+		  }
 		}
-
+	  
 		if (disable) {
-			const buttons = document.querySelectorAll(".keyboard-button");
-			buttons.forEach((button) => {
-				if (currentGuesses.includes(button.innerText.toLowerCase())) {
-					button.disabled = true;
-				}
-			});
+		  const buttons = document.querySelectorAll(".keyboard-button");
+		  buttons.forEach((button) => {
+			if (currentGuesses.includes(button.innerText.toLowerCase())) {
+			  button.disabled = true;
+			}
+		  });
 		}
-	};
+	  };
 
 	const revealAnswer = () => {
 		setCompleted(true);
@@ -167,8 +191,6 @@ const AppUnstyled = ({ className, maxGuesses }) => {
 		return parts;
 	};
 
-	const guessedWord = currentWord.split("").filter((letter) => currentGuesses.includes(currentWord));
-
 	return (
 		<div className={className}>
 			<div className="centered-container">
@@ -186,6 +208,7 @@ const AppUnstyled = ({ className, maxGuesses }) => {
 					inputRefs={inputRefs}
 					handleKeyboardClick={handleKeyboardClick}
 					currentGuesses={currentGuesses}
+					gaveUp={gaveUp}
 				/>
 				{gameStarted && completed && <WinMessage gaveUp={gaveUp} currentQuote={currentQuote} highlightCurrentWord={highlightCurrentWord} currentWord={currentWord} />}
 			</div>

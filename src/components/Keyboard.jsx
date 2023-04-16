@@ -49,4 +49,11 @@ export const Keyboard = styled(KeyboardUnstyled)`
 		justify-content: center;
 		align-items: center;
 	}
+
+	.keyboard {
+		justify-content: center;
+		align-items: center;
+		transform: scale(1.5);
+	}
+
 `;

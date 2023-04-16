@@ -167,7 +167,8 @@ const excludedWords = [
   "getting",
   "theres",
   "havent",
-  "stay"
+  "stay",
+  "doesnt"
 ];
 
 export default excludedWords;

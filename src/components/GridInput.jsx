@@ -1,27 +1,25 @@
 import React, { useRef } from "react";
 import styled from "styled-components";
 
-const GridInputUnstyled = ({ className, gridInput, setGridInput, makeGuess, currentWord, numGuesses, isGameWon, handleKeyboardClick, inputRefs, currentGuesses }) => {
-	const handleInputChange = (rowIndex, colIndex, value) => {
-		if (!currentGuesses.includes(value.toLowerCase())) {
-			handleKeyboardClick(value, false);
-		}
+const GridInputUnstyled = ({ className, gridInput, setGridInput, makeGuess, currentWord, numGuesses, isGameWon, handleKeyboardClick, inputRefs, currentGuesses, gaveUp }) => {
+	const handleInputChange = (rowIndex, colIndex, value) => {	  
 		value = value.toUpperCase();
 		const newGridInput = [...gridInput];
 		newGridInput[rowIndex][colIndex] = value;
 		setGridInput(newGridInput);
-
+	  
 		if (value.length === 1 && /^[a-zA-Z]$/.test(value)) {
-			makeGuess(value, rowIndex);
+		  const isCorrect = makeGuess(value, rowIndex);
+		  if (!isCorrect) {
 			const nextColIndex = colIndex + 1;
 			if (nextColIndex < currentWord.length) {
-				inputRefs[rowIndex][nextColIndex].current.focus();
+			  inputRefs[rowIndex][nextColIndex].current.focus();
 			} else if (rowIndex + 1 < gridInput.length && rowIndex === numGuesses - 1) {
-				inputRefs[rowIndex + 1][0].current.focus();
+			  inputRefs[rowIndex + 1][0].current.focus();
 			}
-			handleKeyboardClick(value);
+		  }
 		}
-	};
+	  };
 
 	const handleKeyPress = (event, rowIndex) => {
 		if (event.key === "Enter") {
@@ -85,8 +83,9 @@ const GridInputUnstyled = ({ className, gridInput, setGridInput, makeGuess, curr
 								onInput={handleInputRestriction}
 								className={`grid-input-cell ${gridCellStyle}`}
 								ref={inputRefs[rowIndex][colIndex]}
-								disabled={rowIndex !== numGuesses}
+								disabled={rowIndex !== numGuesses || gaveUp}
 								data-columns={colIndex}
+								gaveUp={gaveUp}
 							/>
 						);
 					})}
@@ -97,56 +96,55 @@ const GridInputUnstyled = ({ className, gridInput, setGridInput, makeGuess, curr
 };
 
 const GridInput = styled(GridInputUnstyled)`
-	display: grid;
-	// Need to change whole thing to grid and use 
-	// grid-template-rows && grid-template-columns
-	flex-direction: column;
-	align-items: center;
+  display: grid;
+  align-items: center;
+  grid-gap: 8px;
 
-	.grid-input-row {
-		display: flex;
-	}
+  .grid-input-row {
+    display: grid;
+    grid-template-columns: repeat(${(props) => props.currentWord.length}, 1fr);
+	grid-gap: 10px;
+  }
 
-	.grid-input-cell {
-		text-align: center;
-		background-color: #999;
-		color: white;
-		font-size: 30px;
-		max-width: 50%;
-		width: 100%;
-		height: 100%;
-	}
+  .grid-input-cell {
+    text-align: center;
+    background-color: #999;
+    color: white;
+    font-size: 30px;
+    width: 90%;
+    height: 90%;
+  }
 
-	@media (max-width: 480px) {
-		max-width: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
+  @media (max-width: 480px) {
+    max-width: 100%;
+    display: grid;
+    align-items: center;
 
-		.grid-input-cell {
-			width: 10vw;
-			height: 5vh;
-			margin: 1px;
-			font-size: 20px;
-			padding: 3px;
-		}
+    .grid-input-row {
+      grid-template-columns: repeat(${(props) => props.currentWord.length}, minmax(10vw, 1fr));
+    }
 
-		/* reduce cell size for 8 or more columns */
-		@media (max-width: 480px) and (min-width: 400px) and (max-height: 500px) {
-			.grid-input-cell {
-				width: calc((90vw - 40px) / 8);
-				height: calc((90vw - 40px) / 8);
-			}
-		}
+    .grid-input-cell {
+      width: 10vw;
+      font-size: 20px;
+    }
 
-		/* reduce cell size for 9 or more columns */
-		@media (max-width: 480px) and (max-width: 320px) and (min-height: 568px) {
-			.grid-input-cell {
-				width: calc((90vw - 40px) / 9);
-				height: calc((90vw - 40px) / 9);
-			}
-		}
-	}
+    /* reduce cell size for 8 or more columns */
+    @media (max-width: 480px) and (min-width: 400px) and (max-height: 500px) {
+      .grid-input-cell {
+        width: calc((90vw - 40px) / 8);
+        height: calc((90vw - 40px) / 8);
+      }
+    }
+
+    /* reduce cell size for 9 or more columns */
+    @media (max-width: 480px) and (max-width: 320px) and (min-height: 568px) {
+      .grid-input-cell {
+        width: calc((90vw - 40px) / 9);
+        height: calc((90vw - 40px) / 9);
+      }
+    }
+  }
 `;
 
 export default GridInput;
