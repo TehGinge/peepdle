@@ -1,6 +1,7 @@
 {
   "name": "peepdle",
   "version": "0.1.0",
+  "homepage": "https://tehginge.github.io/peepdle",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
@@ -11,6 +12,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "webpack-dev-server --mode development --open",
     "build": "webpack --mode production"
   },
@@ -38,6 +41,7 @@
     "@babel/preset-react": "^7.18.6",
     "babel-loader": "^9.1.2",
     "css-loader": "^6.7.3",
+    "gh-pages": "^5.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "style-loader": "^3.3.2",
