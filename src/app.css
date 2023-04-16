@@ -25,6 +25,7 @@ body {
   margin-bottom: 20px;
   text-align: center;
   max-height: 200vh;
+  overflow-y: auto;
 }
 
 .word-container::-webkit-scrollbar {
@@ -49,8 +50,8 @@ body {
 }
 
 .keyboard-container {
-  margin-top: 100px;
-  margin-bottom: 50px;
+  margin-top: 80px;
+  margin-bottom: 10px;
   transform: scale(1.5);
 }
 
@@ -64,7 +65,12 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 40px;
+  margin-bottom: 50px;
+}
+
+.win-message {
+  margin: 1px 0;
 }
 
 .quote-container {
@@ -99,7 +105,8 @@ body {
   text-align: center;
   background-color: #999;
   color: white;
-  font-size: 30px
+  font-size: 30px;
+  max-width: 50%;
 }
 
 .correct-position {
@@ -118,20 +125,29 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 25%;
   padding: 0 50px;
   margin: 0 50px;
   transform: scale(1.5);
+  font-size: 15px;
+  max-width: 600px;
+  min-width: 250px;
 }
 
 .left-button {
   display: flex;
   justify-content: flex-start;
+  max-width: 90%;
 }
 
 .right-button {
   display: flex;
   justify-content: flex-end;
+  max-width: 90%;
+}
+
+.win-tally,
+.episode {
+  margin: 5px 0;
 }
 
 @media (max-width: 480px) {
@@ -143,53 +159,42 @@ body {
 
   .win-message-container {
     margin-top: 10px;
+    margin-bottom: 10px;
   }
 
   .keyboard-row {
     margin-bottom: 5px;
   }
 
-  .win-tally{
-    margin-bottom: 500px;
-    margin-top: 500px;
+  .grid-input-cell {
+    width: calc((90vw - 40px) / 7);
+    height: calc((90vw - 40px) / 7);
+    margin: 1px;
+    font-size: 20px;
+    padding: 3px;
   }
 
-  .grid-input-cell {
-    width: 20px;
-    height: 20px;
-    margin: 2px;
-    font-size: 14px;
+  /* reduce cell size for 8 or more columns */
+  @media (max-width: 480px) and (min-width: 400px) and (max-height: 500px) {
+    .grid-input-cell {
+      width: calc((90vw - 40px) / 8);
+      height: calc((90vw - 40px) / 8);
+    }
+  }
+
+  /* reduce cell size for 9 or more columns */
+  @media (max-width: 480px) and (max-width: 320px) and (min-height: 568px) {
+    .grid-input-cell {
+      width: calc((90vw - 40px) / 9);
+      height: calc((90vw - 40px) / 9);
+    }
   }
 
   .grid-input-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-
-  .fixed-container {
-    height: auto;
-    padding-bottom: 70px;
-  }
-
-  .centered-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    max-width: 600px;
-  }
-
-  .word-container {
-    margin-bottom: 20px;
-    text-align: center;
-    max-height: 40vh;
-    overflow-y: auto;
-    font-size: 16px;
-  }
-
-  .left-button , .right-button  {
-    max-width: 90%;
+    max-width: 800px;
+    max-width: 100%;
   }
 }
-

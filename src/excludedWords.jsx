@@ -46,6 +46,7 @@ const excludedWords = [
   "gonna",
   "some",
   "such",
+  "much",
   "then",
   "till",
   "upon",

@@ -186,13 +186,6 @@ export const App = ({ maxGuesses }) => {
           />
           <GuessesDisplay numGuesses={numGuesses} />
         </div>
-        <div className="keyboard-container">
-          <Keyboard
-            onClick={handleKeyboardClick}
-            guessedLetters={currentGuesses}
-          />
-        </div>
-        <div className="win-tally">Win streak: {winStreak}</div>
         {gameStarted && completed && (
           <div className="win-message-container">
             {!gaveUp && (
@@ -209,10 +202,17 @@ export const App = ({ maxGuesses }) => {
           </div>
         )}
       </div>
+      <div className="keyboard-container">
+        <Keyboard
+          onClick={handleKeyboardClick}
+          guessedLetters={currentGuesses}
+        />
+      </div>
       <div className="button-container">
         <div className="left-button">
           <GiveUpButton onClick={revealAnswer} />
         </div>
+        <div className="win-tally">Win streak: {winStreak}</div>
         <div className="right-button">
           <NewGameButton onClick={startNewGame} />
         </div>

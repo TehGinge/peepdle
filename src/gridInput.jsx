@@ -68,7 +68,7 @@ const GridInput = ({
           {row.map((cell, colIndex) => {
             const currentLetter = gridInput[rowIndex][colIndex];
             let gridCellStyle = "";
-
+  
             if (rowIndex < numGuesses) {
               if (
                 currentLetter.toLowerCase() ===
@@ -88,7 +88,7 @@ const GridInput = ({
                 gridCellStyle = "correct-position";
               }
             }
-
+  
             return (
               <input
                 type="text"
@@ -104,6 +104,7 @@ const GridInput = ({
                 className={`grid-input-cell ${gridCellStyle}`}
                 ref={inputRefs[rowIndex][colIndex]}
                 disabled={rowIndex !== numGuesses}
+                data-columns={colIndex}
               />
             );
           })}
