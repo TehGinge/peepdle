@@ -1,0 +1,42 @@
+import React from "react";
+import { WordDisplay } from "./WordDisplay";
+import styled from "styled-components";
+
+const QuoteUnstyled = ({ className, currentWord, currentGuesses, currentQuote, gaveUp }) => {
+	return (
+		<div className={className}>
+			<div className="quote-container">
+				<WordDisplay currentWord={currentWord} currentGuesses={currentGuesses} quote={currentQuote.quote} gaveUp={gaveUp} />
+			</div>
+		</div>
+	);
+};
+
+export const Quote = styled(QuoteUnstyled)`
+	margin-bottom: 20px;
+	text-align: center;
+	max-height: 200vh;
+	overflow-y: auto;
+
+	::-webkit-scrollbar {
+		width: 8px;
+	}
+
+	::-webkit-scrollbar-track {
+		background: #f1f1f1;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background: #888;
+	}
+
+	::-webkit-scrollbar-thumb:hover {
+		background: #555;
+	}
+
+	.quote-container {
+		max-height: 200px;
+		overflow: auto;
+		margin-bottom: 50px;
+	}
+`;
