@@ -10,8 +10,12 @@ const GridInput = ({
   isGameWon,
   handleKeyboardClick,
   inputRefs,
+  currentGuesses,
 }) => {
   const handleInputChange = (rowIndex, colIndex, value) => {
+    if (!currentGuesses.includes(value.toLowerCase())) {
+      handleKeyboardClick(value, false);
+    }
     value = value.toUpperCase();
     const newGridInput = [...gridInput];
     newGridInput[rowIndex][colIndex] = value;

@@ -12,6 +12,7 @@ import {
 import quotes from "./peepdle-data.json";
 import excludedWords from "./excludedWords";
 import GridInput from "./gridInput";
+import "./app.css";
 
 export const App = ({ maxGuesses }) => {
   const [currentWord, setCurrentWord] = useState("");
@@ -79,8 +80,8 @@ export const App = ({ maxGuesses }) => {
     );
 
     const filteredWords = words.filter(
-      (word) => !excludedWordSet.has(word.toLowerCase())
-    );
+      (word) => !excludedWordSet.has(word.toLowerCase()) && word.length <= 7 // Set maximum word length
+    );    
 
     if (filteredWords.length === 0) {
       startNewGame();
@@ -135,10 +136,19 @@ export const App = ({ maxGuesses }) => {
     Array.from({ length: currentWord.length }, () => React.createRef())
   );
 
-  const handleKeyboardClick = (letter) => {
+  const handleKeyboardClick = (letter, disable = true) => {
     makeGuess(letter, numGuesses);
     if (numGuesses < gridInput.length - 1) {
       inputRefs[numGuesses + 1][0].current.focus();
+    }
+  
+    if (disable) {
+      const buttons = document.querySelectorAll(".keyboard-button");
+      buttons.forEach((button) => {
+        if (currentGuesses.includes(button.innerText.toLowerCase())) {
+          button.disabled = true;
+        }
+      });
     }
   };
 
@@ -183,6 +193,7 @@ export const App = ({ maxGuesses }) => {
             isGameWon={completed}
             inputRefs={inputRefs}
             handleKeyboardClick={handleKeyboardClick}
+            currentGuesses={currentGuesses}
           />
           <GuessesDisplay numGuesses={numGuesses} />
         </div>
@@ -206,6 +217,7 @@ export const App = ({ maxGuesses }) => {
         <Keyboard
           onClick={handleKeyboardClick}
           guessedLetters={currentGuesses}
+          currentWord={currentWord}
         />
       </div>
       <div className="button-container">
