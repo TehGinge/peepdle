@@ -25,6 +25,8 @@ const excludedWords = [
   "have",
   "as",
   "than",
+  "thank",
+  "thanks",
   "from",
   "that",
   "thats",

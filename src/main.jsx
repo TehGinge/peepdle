@@ -10,10 +10,11 @@ const GlobalStyle = createGlobalStyle`
   
   body {
     background: rgb(49, 48, 48);
-    font-size: 20px;
+    font-size: 22px;
     color: white;
     margin: 0;
     height: 100%;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   }
 
   #root {

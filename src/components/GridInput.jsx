@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import styled from "styled-components";
 
-const GridInputUnstyled = ({ className, gridInput, setGridInput, makeGuess, currentWord, numGuesses, isGameWon, handleKeyboardClick, inputRefs, currentGuesses, gaveUp }) => {
+const GridInputUnstyled = ({ className, gridInput, setGridInput, makeGuess, currentWord, numGuesses, isGameWon, inputRefs}) => {
 	const handleInputChange = (rowIndex, colIndex, value) => {	  
 		value = value.toUpperCase();
 		const newGridInput = [...gridInput];
@@ -83,9 +83,8 @@ const GridInputUnstyled = ({ className, gridInput, setGridInput, makeGuess, curr
 								onInput={handleInputRestriction}
 								className={`grid-input-cell ${gridCellStyle}`}
 								ref={inputRefs[rowIndex][colIndex]}
-								disabled={rowIndex !== numGuesses || gaveUp}
+								disabled={rowIndex !== numGuesses}
 								data-columns={colIndex}
-								gaveUp={gaveUp}
 							/>
 						);
 					})}

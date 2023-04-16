@@ -23,6 +23,7 @@ export const ButtonContainer = styled(ButtonContainerUnstyled)`
   justify-content: space-evenly;
   align-items: center;
   font-size: 15px;
+  padding-bottom: 20px;
 
   .left-button {
   display: flex;

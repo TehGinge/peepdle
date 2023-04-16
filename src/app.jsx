@@ -59,7 +59,7 @@ const AppUnstyled = ({ className, maxGuesses }) => {
 		const words = randomQuote.quote
 			.replace(/[^\w\s]/gi, "") // Remove punctuation
 			.split(" ")
-			.filter((word) => word.length >= 6); // Set minimum word length
+			.filter((word) => word.length >= 5); // Set minimum word length
 
 		const excludedWordSet = new Set(excludedWords.map((word) => word.toLowerCase()));
 
@@ -213,7 +213,6 @@ const AppUnstyled = ({ className, maxGuesses }) => {
 				{gameStarted && completed && <WinMessage gaveUp={gaveUp} currentQuote={currentQuote} highlightCurrentWord={highlightCurrentWord} currentWord={currentWord} />}
 			</div>
 			<Keyboard onClick={handleKeyboardClick} guessedLetters={currentGuesses} currentWord={currentWord} />
-
 			<ButtonContainer revealAnswer={revealAnswer} winStreak={winStreak} startNewGame={startNewGame} />
 		</div>
 	);
@@ -223,7 +222,7 @@ export const App = styled(AppUnstyled)`
 	height: 100%;
 	display: flex;
 	flex-direction: column;
-	justify-content: space-evenly;
+	justify-content: space-between;
 	align-items: center;
 
 	.centered-container {
@@ -232,6 +231,9 @@ export const App = styled(AppUnstyled)`
 		justify-content: center;
 		align-items: center;
 		max-width: 600px;
+		padding-left: 10px;
+		padding-right: 10px;
+		padding-top: 10px;
 	}
 
 	.highlighted {
