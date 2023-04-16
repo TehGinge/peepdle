@@ -42,6 +42,7 @@ const excludedWords = [
   "even",
   "good",
   "how",
+  "hows",
   "once",
   "gonna",
   "some",
@@ -107,7 +108,7 @@ const excludedWords = [
   "within",
   "yeah",
   "your",
-  "you're",
+  "youre",
   "think",
   "might",
   "knew",
@@ -134,9 +135,13 @@ const excludedWords = [
   "don",
   "all",
   "mark",
+  "marks",
   "jeremy",
+  "jeremys",
   "sophie",
+  "sophies",
   "dobby",
+  "dobbys",
   "hans",
   "got",
   "get",
@@ -160,7 +165,9 @@ const excludedWords = [
   "course",
   "having",
   "getting",
-  "theres"
+  "theres",
+  "havent",
+  "stay"
 ];
 
 export default excludedWords;
