@@ -1,6 +1,6 @@
 import React from "react";
 import { GuessesDisplay } from "./GuessesDisplay";
-import GridInput from "./gridInput";
+import GridInput from "./GridInput";
 import styled from "styled-components";
 
 const GuessesUnstyled = ({ className, gridInput, setGridInput, maxGuesses, makeGuess, currentWord, numGuesses, completed, inputRefs, handleKeyboardClick, currentGuesses }) => {

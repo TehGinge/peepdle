@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Keyboard } from "./components/keyboard";
+import { Keyboard } from "./components/Keyboard";
 import { useEffect } from "react";
 import { useLayoutEffect } from "react";
 // import { CurrentWordDisplay } from "./main";
