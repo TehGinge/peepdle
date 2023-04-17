@@ -3,7 +3,7 @@ import { GuessesDisplay } from "./GuessesDisplay";
 import GridInput from "./GridInput";
 import styled from "styled-components";
 
-const GuessesUnstyled = ({ className, gridInput, setGridInput, maxGuesses, makeGuess, currentWord, numGuesses, completed, inputRefs, handleKeyboardClick, currentGuesses }) => {
+const GuessesUnstyled = ({ className, gridInput, setGridInput, maxGuesses, makeGuess, currentWord, numGuesses, completed, inputRefs, handleKeyboardClick, currentGuesses, handleBackspaceClick,  handleEnterClick, }) => {
   return (
     <div className={className}>
       <GridInput
@@ -16,7 +16,10 @@ const GuessesUnstyled = ({ className, gridInput, setGridInput, maxGuesses, makeG
         isGameWon={completed}
         inputRefs={inputRefs}
         handleKeyboardClick={handleKeyboardClick}
-        currentGuesses={currentGuesses} />
+        currentGuesses={currentGuesses}
+        handleBackspaceClick={handleBackspaceClick}
+        handleEnterClick={handleEnterClick} 
+        />
       <GuessesDisplay numGuesses={numGuesses} />
     </div>
   );

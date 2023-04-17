@@ -1,38 +1,34 @@
-import React, { useRef } from "react";
 import styled from "styled-components";
+import React, { useRef, useEffect } from "react";
 
-const GridInputUnstyled = ({ className, gridInput, setGridInput, makeGuess, currentWord, numGuesses, isGameWon, inputRefs}) => {
-	const handleInputChange = (rowIndex, colIndex, value) => {	  
+const GridInputUnstyled = ({ className, gridInput, setGridInput, makeGuess, currentWord, numGuesses, isGameWon, inputRefs, handleKeyboardClick, handleBackspaceClick, handleEnterClick }) => {
+
+	const handleInputChange = (rowIndex, colIndex, value) => {
 		value = value.toUpperCase();
 		const newGridInput = [...gridInput];
 		newGridInput[rowIndex][colIndex] = value;
 		setGridInput(newGridInput);
 	  
 		if (value.length === 1 && /^[a-zA-Z]$/.test(value)) {
-		  const isCorrect = makeGuess(value, rowIndex);
-		  if (!isCorrect) {
-			const nextColIndex = colIndex + 1;
-			if (nextColIndex < currentWord.length) {
-			  inputRefs[rowIndex][nextColIndex].current.focus();
-			} else if (rowIndex + 1 < gridInput.length && rowIndex === numGuesses - 1) {
+		  const nextColIndex = colIndex + 1;
+		  if (nextColIndex < currentWord.length) {
+			inputRefs[rowIndex][nextColIndex].current.focus();
+		  }
+		}
+	  };
+	  
+	  const handleKeyPress = (event, rowIndex) => {
+		if (event.key === "Enter") {
+		  const inputValues = gridInput[rowIndex].filter((value) => value && value.trim() !== "");
+		  if (inputValues.length === currentWord.length) {
+			makeGuess(inputValues.join(""), rowIndex);
+			if (rowIndex + 1 < gridInput.length) {
 			  inputRefs[rowIndex + 1][0].current.focus();
 			}
 		  }
 		}
 	  };
-
-	const handleKeyPress = (event, rowIndex) => {
-		if (event.key === "Enter") {
-			const inputValues = gridInput[rowIndex].filter((value) => value && value.trim() !== "");
-			if (inputValues.length === currentWord.length) {
-				makeGuess(inputValues.join(""), rowIndex);
-				if (rowIndex + 1 < gridInput.length) {
-					inputRefs[rowIndex + 1][0].current.focus();
-				}
-			}
-		}
-	};
-
+	
 	// Restrict input to just letters
 	const handleInputRestriction = (event) => {
 		const value = event.target.value;
@@ -85,6 +81,8 @@ const GridInputUnstyled = ({ className, gridInput, setGridInput, makeGuess, curr
 								ref={inputRefs[rowIndex][colIndex]}
 								disabled={rowIndex !== numGuesses}
 								data-columns={colIndex}
+								handleBackspaceClick={handleBackspaceClick}
+								handleEnterClick={handleEnterClick}
 							/>
 						);
 					})}

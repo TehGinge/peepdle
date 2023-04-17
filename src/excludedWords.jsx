@@ -170,7 +170,10 @@ const excludedWords = [
   "theres",
   "havent",
   "stay",
-  "doesnt"
+  "doesnt",
+  "arent",
+  "theyre",
+  "youve"
 ];
 
 export default excludedWords;
