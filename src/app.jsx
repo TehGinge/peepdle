@@ -202,20 +202,22 @@ const AppUnstyled = ({ className, maxGuesses }) => {
   };
 
   const handleBackspaceClick = () => {
-    for (let row = numGuesses; row >= 0; row--) {
+    console.log("Backspace clicked");
+    for (let row = numGuesses; row >= numGuesses; row--) { // Limit row to numGuesses
       for (let col = currentWord.length - 1; col >= 0; col--) {
-        const inputRef = inputRefs[row][col].current;
-        if (inputRef && inputRef.value) {
-          inputRef.value = "";
-
-          // Update gridInput state directly
+        const currentLetter = gridInput[row][col];
+        if (currentLetter) {
           setGridInput((prevGridInput) => {
             const newGridInput = [...prevGridInput];
             newGridInput[row][col] = "";
             return newGridInput;
           });
-
-          inputRef.focus();
+  
+          if (row === numGuesses) {
+            if (col > 0) {
+              inputRefs[row][col - 1].current.focus();
+            }
+          }
           return;
         }
       }
@@ -223,6 +225,7 @@ const AppUnstyled = ({ className, maxGuesses }) => {
   };
 
   const handleEnterClick = () => {
+    console.log("Enter clicked");
     const inputValues = gridInput[numGuesses].filter(
       (value) => value && value.trim() !== ""
     );
@@ -265,6 +268,8 @@ const AppUnstyled = ({ className, maxGuesses }) => {
           completed={completed}
           inputRefs={inputRefs}
           handleKeyboardClick={handleKeyboardClick}
+          handleBackspace={handleBackspaceClick}
+          handleEnter={handleEnterClick}
           currentGuesses={currentGuesses}
           gaveUp={gaveUp}
         />

@@ -4,8 +4,6 @@ import React, { useRef, useEffect } from "react";
 const GridInputUnstyled = ({
   className,
   gridInput,
-  setGridInput,
-  makeGuess,
   currentWord,
   numGuesses,
   isGameWon,
@@ -14,54 +12,41 @@ const GridInputUnstyled = ({
   handleBackspaceClick,
   handleEnterClick,
 }) => {
-  const handleInputChange = (rowIndex, colIndex, value) => {
-    value = value.toUpperCase();
-    const newGridInput = [...gridInput];
-    newGridInput[rowIndex][colIndex] = value;
-    setGridInput(newGridInput);
 
-    if (value.length === 1 && /^[a-zA-Z]$/.test(value)) {
-      const nextColIndex = colIndex + 1;
-      if (nextColIndex < currentWord.length) {
-        inputRefs[rowIndex][nextColIndex].current.focus();
-      }
-    }
-  };
+  const rootRef = useRef(null);
 
-  const handleKeyPress = (event, rowIndex) => {
-    if (event.key === "Enter") {
-      const inputValues = gridInput[rowIndex].filter(
-        (value) => value && value.trim() !== ""
-      );
-      if (inputValues.length === currentWord.length) {
-        makeGuess(inputValues.join(""), rowIndex);
-        if (rowIndex + 1 < gridInput.length) {
-          inputRefs[rowIndex + 1][0].current.focus();
+  useEffect(() => {
+    const handleDesktopKeyDown = (event) => {
+      console.log("Key pressed:", event.key);
+      const key = event.key.toUpperCase();
+      const isLetter = /^[A-Z]$/.test(key);
+      if (isLetter) {
+        handleKeyboardClick(key, false);
+      } else if (event.key === 'Backspace') {
+        if (handleBackspaceClick) {
+          handleBackspaceClick();
+        }
+      } else if (event.key === 'Enter') {
+        if (handleEnterClick) {
+          handleEnterClick();
         }
       }
+    };
+  
+    if (rootRef.current) {
+      rootRef.current.addEventListener("keydown", handleDesktopKeyDown);
     }
-  };
-
-  // Restrict input to just letters
-  const handleInputRestriction = (event) => {
-    const value = event.target.value;
-    if (!/^[a-zA-Z]$/.test(value)) {
-      event.target.value = "";
-    }
-  };
-
-  // Allow backspace to work with the gridbox
-  const handleKeyDown = (rowIndex, colIndex, event) => {
-    if (event.key === "Backspace" && gridInput[rowIndex][colIndex] === "") {
-      const prevColIndex = colIndex - 1;
-      if (prevColIndex >= 0) {
-        inputRefs[rowIndex][prevColIndex].current.focus();
+  
+    return () => {
+      if (rootRef.current) {
+        rootRef.current.removeEventListener("keydown", handleDesktopKeyDown);
       }
-    }
-  };
+    };
+  }, [handleKeyboardClick, handleBackspaceClick, handleEnterClick, rootRef]);
+  
 
   return (
-    <div className={className}>
+    <div className={className} tabIndex="0" ref={rootRef}>
       {gridInput.map((row, rowIndex) => (
         <div className="grid-input-row" key={`row-${rowIndex}`}>
           {row.map((cell, colIndex) => {
@@ -89,24 +74,15 @@ const GridInputUnstyled = ({
             }
 
             return (
-              <input
-                type="text"
-                maxLength={1}
-                value={cell}
-                key={`cell-${rowIndex}-${colIndex}`}
-                onChange={(e) =>
-                  handleInputChange(rowIndex, colIndex, e.target.value)
-                }
-                onKeyDown={(e) => handleKeyDown(rowIndex, colIndex, e)}
-                onKeyPress={(e) => handleKeyPress(e, rowIndex)}
-                onInput={handleInputRestriction}
+              <div
                 className={`grid-input-cell ${gridCellStyle}`}
                 ref={inputRefs[rowIndex][colIndex]}
                 disabled={rowIndex !== numGuesses}
                 data-columns={colIndex}
-                handleBackspaceClick={handleBackspaceClick}
-                handleEnterClick={handleEnterClick}
-              />
+                onClick={() => handleKeyboardClick(currentLetter)}
+              >
+                {cell}
+              </div>
             );
           })}
         </div>
@@ -118,30 +94,32 @@ const GridInputUnstyled = ({
 const GridInput = styled(GridInputUnstyled)`
   display: grid;
   align-items: center;
-  grid-gap: 8px;
+  grid-gap: 1px; // gap between rows
+  justify-content: center;
 
   .grid-input-row {
     display: grid;
     grid-template-columns: repeat(${(props) => props.currentWord.length}, 1fr);
-    grid-gap: 10px;
+    grid-gap: 1px; // gap between columns
   }
 
   .grid-input-cell {
-    text-align: center;
     background-color: #000000;
     color: white;
     font-size: 30px;
-    width: 55px;
-    height: 55px;
+    width: 60px;
+    height: 60px;
     border: 2px solid #464545;
     outline: none;
+    display: grid;
+    align-items: center;
   }
 
   @media (max-width: 768px) {
     .grid-input-cell {
       font-size: 30px;
-      width: 40px;
-      height: 40px;
+      width: 45px;
+      height: 45px;
     }
   }
 
@@ -155,8 +133,8 @@ const GridInput = styled(GridInputUnstyled)`
 
     .grid-input-cell {
       font-size: 25px;
-      width: 35px;
-      height: 35px;
+      width: 45px;
+      height: 45px;
     }
   }
 `;

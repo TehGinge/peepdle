@@ -155,6 +155,9 @@ const excludedWords = [
   "usbourne",
   "merry",
   "hans",
+  "jerry",
+  "heather",
+  "nancy",
   "got",
   "get",
   "are",
@@ -191,7 +194,8 @@ const excludedWords = [
   "whole",
   "didnt",
   "ready",
-  "dinner"
+  "dinner",
+  "sorry"
 ];
 
 export default excludedWords;

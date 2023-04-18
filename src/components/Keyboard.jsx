@@ -140,7 +140,7 @@ const KeyboardUnstyled = ({ className, onClick, guessedLetters, handleBackspaceC
 
   @media (max-width: 480px) {
   .keyboard-button {
-    font-size: 0.8rem;
+    font-size: 1rem;
 	height: 3rem;
     width: 2rem;
     margin: 0.15rem;
