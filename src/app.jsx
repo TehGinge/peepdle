@@ -318,14 +318,4 @@ export const App = styled(AppUnstyled)`
   .highlighted {
     background-color: yellow;
   }
-
-  .correct-position {
-    background-color: green;
-    color: white;
-  }
-
-  .in-word {
-    background-color: orange;
-    color: white;
-  }
 `;
