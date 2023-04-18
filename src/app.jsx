@@ -132,40 +132,39 @@ const AppUnstyled = ({ className, maxGuesses }) => {
     Array.from({ length: currentWord.length }, () => React.createRef())
   );
 
-const handleKeyboardClick = (letter, disable = true) => {
-  if (gaveUp) {
-    return;
-  }
-
-  const newGridInput = [...gridInput];
-  const currentRow = newGridInput[numGuesses];
-  const colIndex = currentRow.findIndex((value) => !value);
-  if (colIndex === -1) {
-    return;
-  }
-
-  newGridInput[numGuesses][colIndex] = letter.toUpperCase();
-  setGridInput(newGridInput);
-
-  if (numGuesses < gridInput.length - 1) {
-    const nextColIndex = colIndex + 1;
-    if (nextColIndex < currentWord.length) {
-      inputRefs[numGuesses][nextColIndex].current.focus();
-    } else {
-      inputRefs[numGuesses + 1][0].current.focus();
+  const handleKeyboardClick = (letter, disable = true) => {
+    if (gaveUp) {
+      return;
     }
-  }
 
-  if (disable) {
-    const buttons = document.querySelectorAll(".keyboard-button");
-    buttons.forEach((button) => {
-      if (currentGuesses.includes(button.innerText.toLowerCase())) {
-        button.disabled = true;
+    const newGridInput = [...gridInput];
+    const currentRow = newGridInput[numGuesses];
+    const colIndex = currentRow.findIndex((value) => !value);
+    if (colIndex === -1) {
+      return;
+    }
+
+    newGridInput[numGuesses][colIndex] = letter.toUpperCase();
+    setGridInput(newGridInput);
+
+    if (numGuesses < gridInput.length - 1) {
+      const nextColIndex = colIndex + 1;
+      if (nextColIndex < currentWord.length) {
+        inputRefs[numGuesses][nextColIndex].current.focus();
+      } else {
+        inputRefs[numGuesses + 1][0].current.focus();
       }
-    });
-  }
-};
+    }
 
+    if (disable) {
+      const buttons = document.querySelectorAll(".keyboard-button");
+      buttons.forEach((button) => {
+        if (currentGuesses.includes(button.innerText.toLowerCase())) {
+          button.disabled = true;
+        }
+      });
+    }
+  };
 
   const revealAnswer = () => {
     setCompleted(true);
@@ -203,43 +202,48 @@ const handleKeyboardClick = (letter, disable = true) => {
   };
 
   const handleBackspaceClick = () => {
-	for (let row = numGuesses; row >= 0; row--) {
-	  for (let col = currentWord.length - 1; col >= 0; col--) {
-		const inputRef = inputRefs[row][col].current;
-		if (inputRef && inputRef.value) {
-		  inputRef.value = "";
-  
-		  // Update gridInput state directly
-		  setGridInput((prevGridInput) => {
-			const newGridInput = [...prevGridInput];
-			newGridInput[row][col] = "";
-			return newGridInput;
-		  });
-  
-		  inputRef.focus();
-		  return;
-		}
-	  }
-	}
+    for (let row = numGuesses; row >= 0; row--) {
+      for (let col = currentWord.length - 1; col >= 0; col--) {
+        const inputRef = inputRefs[row][col].current;
+        if (inputRef && inputRef.value) {
+          inputRef.value = "";
+
+          // Update gridInput state directly
+          setGridInput((prevGridInput) => {
+            const newGridInput = [...prevGridInput];
+            newGridInput[row][col] = "";
+            return newGridInput;
+          });
+
+          inputRef.focus();
+          return;
+        }
+      }
+    }
   };
-  
+
   const handleEnterClick = () => {
-	const inputValues = gridInput[numGuesses].filter(
-	  (value) => value && value.trim() !== ""
-	);
-	if (inputValues.length === currentWord.length) {
-	  const isCorrect = makeGuess(inputValues.join(""), numGuesses);
-	  if (isCorrect) {
-		return;
-	  }
-	}
-	if (numGuesses + 1 < gridInput.length) {
-	  inputRefs[numGuesses + 1][0].current.focus();
-	}
+    const inputValues = gridInput[numGuesses].filter(
+      (value) => value && value.trim() !== ""
+    );
+    if (inputValues.length === currentWord.length) {
+      const isCorrect = makeGuess(inputValues.join(""), numGuesses);
+      if (isCorrect) {
+        return;
+      }
+    }
+    if (numGuesses + 1 < gridInput.length) {
+      inputRefs[numGuesses + 1][0].current.focus();
+    }
   };
-  
+
   return (
     <div className={className}>
+      <ButtonContainer
+        revealAnswer={revealAnswer}
+        winStreak={winStreak}
+        startNewGame={startNewGame}
+      />
       <div className="centered-container">
         {currentQuote && currentQuote.quote && (
           <Quote
@@ -277,13 +281,8 @@ const handleKeyboardClick = (letter, disable = true) => {
         onClick={handleKeyboardClick}
         guessedLetters={currentGuesses}
         currentWord={currentWord}
-		handleBackspaceClick={handleBackspaceClick}
-		handleEnterClick={handleEnterClick}
-      />
-      <ButtonContainer
-        revealAnswer={revealAnswer}
-        winStreak={winStreak}
-        startNewGame={startNewGame}
+        handleBackspaceClick={handleBackspaceClick}
+        handleEnterClick={handleEnterClick}
       />
     </div>
   );

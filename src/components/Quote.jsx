@@ -13,7 +13,7 @@ const QuoteUnstyled = ({ className, currentWord, currentGuesses, currentQuote, g
 };
 
 export const Quote = styled(QuoteUnstyled)`
-	margin-bottom: 20px;
+	margin-bottom: 10px;
 	text-align: center;
 	max-height: 200vh;
 	overflow-y: auto;
@@ -37,6 +37,6 @@ export const Quote = styled(QuoteUnstyled)`
 	.quote-container {
 		max-height: 200px;
 		overflow: auto;
-		margin-bottom: 50px;
+		margin-bottom: 5px;
 	}
 `;

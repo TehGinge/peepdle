@@ -144,6 +144,16 @@ const excludedWords = [
   "sophies",
   "dobby",
   "dobbys",
+  "gerrard",
+  "gerrards",
+  "simon",
+  "simons",
+  "joshie",
+  "johnson",
+  "johnsons",
+  "corrigan",
+  "usbourne",
+  "merry",
   "hans",
   "got",
   "get",
@@ -173,7 +183,15 @@ const excludedWords = [
   "doesnt",
   "arent",
   "theyre",
-  "youve"
+  "youve",
+  "later",
+  "super",
+  "again",
+  "better",
+  "whole",
+  "didnt",
+  "ready",
+  "dinner"
 ];
 
 export default excludedWords;

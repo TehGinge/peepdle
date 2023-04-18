@@ -1,7 +1,8 @@
 import React from "react";
+import styled from "styled-components";
 
 
-export const WordDisplay = ({ currentWord, currentGuesses, quote, gaveUp }) => {
+export const WordDisplayUnstyled = ({ className, currentWord, currentGuesses, quote, gaveUp }) => {
   const wordsArray = quote.split(" ");
   const displayQuote = wordsArray.map((word, index) => {
     const strippedWord = word.replace(/[^\w\s']/g, ""); // Keep apostrophes in the word
@@ -22,17 +23,28 @@ export const WordDisplay = ({ currentWord, currentGuesses, quote, gaveUp }) => {
           .join("")
       : word;
 
-    return (
-      <span key={index}>
-        {isCurrentWord ? (
-          <span className="current-word">{displayWord}</span>
-        ) : (
-          <span>{word}</span>
-        )}
-        {index !== quote.split(" ").length - 1 && " "}
-      </span>
-    );
-  });
+      return (
+        <span key={index}>
+          {isCurrentWord ? (
+            <span className="current-word">{displayWord}</span>
+          ) : (
+            <span>{word}</span>
+          )}
+          {index !== quote.split(" ").length - 1 && " "}
+        </span>
+      );
+    });
+  
+    return <div id="word-display" className={className}>{displayQuote}</div>;
+  };
+  
+  export const WordDisplay = styled(WordDisplayUnstyled)`
+  font-size: 1.3rem;
+  color: #ffffff;
+  margin: 1rem 0;
+  text-align: center;
 
-  return <div id="word-display">{displayQuote}</div>;
-};
+  .current-word {
+    font-weight: bold;
+  }
+`;

@@ -6,38 +6,59 @@ import styled from "styled-components";
 const ButtonContainerUnstyled = ({ className, revealAnswer, winStreak, startNewGame }) => {
   return (
     <div className={className}>
-      <div className="left-button">
-        <GiveUpButton onClick={revealAnswer} />
-      </div>
-      <div className="win-tally">Win streak: {winStreak}</div>
-      <div className="right-button">
-        <NewGameButton onClick={startNewGame} />
-      </div>
+      <button className="left-button button" onClick={revealAnswer}>
+        Give Up?
+      </button>
+      <div className="win-tally">Win Streak: {winStreak}</div>
+      <button className="right-button button" onClick={startNewGame}>
+        New Game
+      </button>
     </div>
   );
 };
+
 
 export const ButtonContainer = styled(ButtonContainerUnstyled)`
   width: 100%;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  font-size: 15px;
-  padding-bottom: 20px;
+  font-size: 21px;
+  background-color: #3a3a3a;
+  border-radius: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-  .left-button {
-  display: flex;
-  justify-content: flex-start;
-  max-width: 90%;
-}
+  .left-button,
+  .right-button {
+    display: flex;
+    justify-content: flex-start;
+    max-width: 90%;
+    padding: 20px;
+    background-color: #363636;
+    border: 2px solid #d9d9d9;
+    text-transform: uppercase;
+    border-radius: 7px;
+    color: #ffffff;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+  }
 
-.win-tally {
-  margin: 5px 0;
-}
+  .right-button {
+    justify-content: flex-end;
+  }
 
-.right-button {
-  display: flex;
-  justify-content: flex-end;
-  max-width: 90%;
-}
+  .left-button:hover,
+  .right-button:hover {
+    background-color: #fdfdfd;
+    color: #000000;
+  }
+
+  .win-tally {
+    margin: 5px 0;
+    color: #ffffff;
+  }
 `

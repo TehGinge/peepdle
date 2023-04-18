@@ -4,7 +4,7 @@ import styled from "styled-components";
 const WinMessageUnstyled = ({ className, gaveUp, currentQuote, highlightCurrentWord, currentWord }) => {
 	return (
 		<div className={className}>
-			{!gaveUp && <div className="win-message">You won today's peepdle!</div>}
+			{!gaveUp && <div className="win-message">That was the correct answer.</div>}
 			{currentQuote && currentQuote.quote && (
 				<div className="full-quote">
 					<span>
