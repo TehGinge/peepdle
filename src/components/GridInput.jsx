@@ -34,12 +34,12 @@ const GridInputUnstyled = ({
     };
   
     if (rootRef.current) {
-      rootRef.current.addEventListener("keydown", handleDesktopKeyDown);
+      window.addEventListener("keydown", handleDesktopKeyDown);
     }
   
     return () => {
-      if (rootRef.current) {
-        rootRef.current.removeEventListener("keydown", handleDesktopKeyDown);
+      if (window) {
+        window.removeEventListener("keydown", handleDesktopKeyDown);
       }
     };
   }, [handleKeyboardClick, handleBackspaceClick, handleEnterClick, rootRef]);
@@ -79,7 +79,6 @@ const GridInputUnstyled = ({
                 ref={inputRefs[rowIndex][colIndex]}
                 disabled={rowIndex !== numGuesses}
                 data-columns={colIndex}
-                onClick={() => handleKeyboardClick(currentLetter)}
               >
                 {cell}
               </div>
@@ -113,6 +112,7 @@ const GridInput = styled(GridInputUnstyled)`
     outline: none;
     display: grid;
     align-items: center;
+    user-select: none;
   }
 
   @media (max-width: 768px) {

@@ -92,6 +92,7 @@ const AppUnstyled = ({ className, maxGuesses }) => {
     setNumGuesses(0);
     setCompleted(false);
     setGameStarted(true);
+    setGaveUp(false);
   };
 
   const makeGuess = (guess, rowIndex) => {
@@ -111,7 +112,7 @@ const AppUnstyled = ({ className, maxGuesses }) => {
         }
       });
 
-      if (guess.toLowerCase() === currentWord) {
+      if (!completed && guess.toLowerCase() === currentWord) {
         setCompleted(true);
         setWinStreak(winStreak + 1);
         return true; // Return true when the guess is correct
@@ -268,8 +269,8 @@ const AppUnstyled = ({ className, maxGuesses }) => {
           completed={completed}
           inputRefs={inputRefs}
           handleKeyboardClick={handleKeyboardClick}
-          handleBackspace={handleBackspaceClick}
-          handleEnter={handleEnterClick}
+          handleBackspaceClick={handleBackspaceClick}
+          handleEnterClick={handleEnterClick}
           currentGuesses={currentGuesses}
           gaveUp={gaveUp}
         />
