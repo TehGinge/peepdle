@@ -2,8 +2,6 @@ import React from "react";
 import * as ReactDOMClient from "react-dom/client";
 import { App } from "./app";
 import { createGlobalStyle } from "styled-components";
-import gameWonGif from './johnson-win.gif';
-import gameOverGif from './mark-lose.gif';
 
 const GlobalStyle = createGlobalStyle`
   html {
@@ -31,15 +29,6 @@ const GlobalStyle = createGlobalStyle`
     }
   }
 `;
-
-export const renderGif = (numGuesses, gridInput, isGameWon, gaveUp) => {
-  if (gaveUp) {
-    return <img src={gameOverGif} alt="Game over" />;
-  } else if (numGuesses >= gridInput.length - 1 || isGameWon) {
-    return <img src={gameWonGif} alt="Game won" />;
-  }
-  return null;
-};
 
 export const maxGuesses = 5;
 
