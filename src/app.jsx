@@ -279,6 +279,9 @@ const AppUnstyled = ({ className, maxGuesses }) => {
             currentQuote={currentQuote}
             highlightCurrentWord={highlightCurrentWord}
             currentWord={currentWord}
+            isGameWon={completed}
+            numGuesses={numGuesses}
+            gridInput={gridInput}
           />
         )}
       </div>
