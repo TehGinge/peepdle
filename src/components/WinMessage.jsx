@@ -71,6 +71,13 @@ export const WinMessage = styled(WinMessageUnstyled)`
   .episode {
     margin: 5px 0;
   }
+  
+  img {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    margin-bottom: 10px;
+  }
 
   @media (max-width: 480px) {
     margin-top: 10px;
