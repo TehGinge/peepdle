@@ -17,7 +17,7 @@ It is available to play via Github Pages - https://tehginge.github.io/peepdle/
 
 1. Clone the repository
 ```
-git clone https://github.com/yourusername/peepdle.git
+git clone https://github.com/TehGinge/peepdle.git
 ```
 2. Navigate to the project directory
 ```
