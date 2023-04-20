@@ -10,6 +10,7 @@ import { ButtonContainer } from "./components/ButtonContainer";
 import { Quote } from "./components/Quote";
 import { WinMessage } from "./components/WinMessage";
 import { Guesses } from "./components/Guesses";
+import { Hint } from "./components/Hint";
 
 const AppUnstyled = ({ className, maxGuesses }) => {
   const [currentWord, setCurrentWord] = useState("");
@@ -19,6 +20,8 @@ const AppUnstyled = ({ className, maxGuesses }) => {
   const [winStreak, setWinStreak] = useState(0);
   const [currentQuote, setCurrentQuote] = useState({});
   const [gameStarted, setGameStarted] = useState(false);
+  const [hintsLeft, setHintsLeft] = useState(2);
+  const [hintIndex, setHintIndex] = useState(0);
   const [gaveUp, setGaveUp] = useState(false);
   const [gridInput, setGridInput] = useState(
     Array.from({ length: maxGuesses }, () => Array(currentWord.length).fill(""))
@@ -54,22 +57,25 @@ const AppUnstyled = ({ className, maxGuesses }) => {
     }
   }, [gameStarted, inputRefs]);
 
-  const startNewGame = () => {
-    // Log invalid quotes
-    quotes.results.forEach((quoteObj, index) => {
-      if (!quoteObj.quote) {
-        console.log(`Invalid quote at index ${index}:`, quoteObj);
-      }
-    });
+  const processQuote = (quote) => {
+    const cleanedQuote = quote.replace(/\[.*?\]/g, ""); // Remove content within square brackets
+    const words = cleanedQuote
+      .replace(/[^\w\s]/gi, "") // Remove punctuation
+      .split(" ");
+    return words;
+  };
 
-    const validQuotes = quotes.results.filter((quoteObj) => quoteObj.quote);
+  const startNewGame = () => {
+    const validQuotes = quotes.results.filter((quoteObj) => {
+      const words = processQuote(quoteObj.quote);
+      return quoteObj.quote && words.length > 1; // Exclude quotes with only one word
+    });
 
     const randomQuote =
       validQuotes[Math.floor(Math.random() * validQuotes.length)];
-    const words = randomQuote.quote
-      .replace(/[^\w\s]/gi, "") // Remove punctuation
-      .split(" ")
-      .filter((word) => word.length >= 5); // Set minimum word length
+    const words = processQuote(randomQuote.quote).filter(
+      (word) => word.length >= 5
+    ); // Set minimum word length
 
     const excludedWordSet = new Set(
       excludedWords.map((word) => word.toLowerCase())
@@ -93,6 +99,7 @@ const AppUnstyled = ({ className, maxGuesses }) => {
     setCompleted(false);
     setGameStarted(true);
     setGaveUp(false);
+    setHintIndex(0);
   };
 
   const makeGuess = (guess, rowIndex) => {
@@ -177,6 +184,21 @@ const AppUnstyled = ({ className, maxGuesses }) => {
     setWinStreak(0);
   };
 
+  const useHint = () => {
+    if (gaveUp || completed) return;
+    if (hintsLeft > 0 && hintIndex < 2) {
+      setHintIndex((prevHintIndex) => prevHintIndex + 1);
+      setHintsLeft((prevHintsLeft) => prevHintsLeft - 1);
+    }
+  };
+
+  useEffect(() => {
+    if (completed && !gaveUp) {
+      setHintIndex(0);
+      setHintsLeft((prevHintsLeft) => prevHintsLeft + 1);
+    }
+  }, [completed, gaveUp]);
+
   const highlightCurrentWord = (quote, word) => {
     const quoteLower = quote.toLowerCase();
     const wordLower = word.toLowerCase();
@@ -204,7 +226,8 @@ const AppUnstyled = ({ className, maxGuesses }) => {
 
   const handleBackspaceClick = () => {
     console.log("Backspace clicked");
-    for (let row = numGuesses; row >= numGuesses; row--) { // Limit row to numGuesses
+    for (let row = numGuesses; row >= numGuesses; row--) {
+      // Limit row to numGuesses
       for (let col = currentWord.length - 1; col >= 0; col--) {
         const currentLetter = gridInput[row][col];
         if (currentLetter) {
@@ -213,7 +236,7 @@ const AppUnstyled = ({ className, maxGuesses }) => {
             newGridInput[row][col] = "";
             return newGridInput;
           });
-  
+
           if (row === numGuesses) {
             if (col > 0) {
               inputRefs[row][col - 1].current.focus();
@@ -274,6 +297,14 @@ const AppUnstyled = ({ className, maxGuesses }) => {
           currentGuesses={currentGuesses}
           gaveUp={gaveUp}
         />
+        <Hint
+          hintIndex={hintIndex}
+          currentQuote={currentQuote}
+          useHint={useHint}
+          hintsLeft={hintsLeft}
+          gameStarted={gameStarted}
+          completed={completed}
+        />
         {gameStarted && completed && (
           <WinMessage
             gaveUp={gaveUp}
@@ -283,6 +314,7 @@ const AppUnstyled = ({ className, maxGuesses }) => {
             isGameWon={completed}
             numGuesses={numGuesses}
             gridInput={gridInput}
+            hintIndex={hintIndex}
           />
         )}
       </div>

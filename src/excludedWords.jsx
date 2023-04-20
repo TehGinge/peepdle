@@ -198,7 +198,8 @@ const excludedWords = [
   "didnt",
   "ready",
   "dinner",
-  "sorry"
+  "sorry",
+  "actually"
 ];
 
 export default excludedWords;

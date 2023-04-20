@@ -1,9 +1,12 @@
 import React from "react";
-import { NewGameButton } from "./NewGameButton";
-import { GiveUpButton } from "./GiveUpButton";
 import styled from "styled-components";
 
-const ButtonContainerUnstyled = ({ className, revealAnswer, winStreak, startNewGame }) => {
+const ButtonContainerUnstyled = ({
+  className,
+  revealAnswer,
+  winStreak,
+  startNewGame
+}) => {
   return (
     <div className={className}>
       <button className="left-button button" onClick={revealAnswer}>
@@ -16,7 +19,6 @@ const ButtonContainerUnstyled = ({ className, revealAnswer, winStreak, startNewG
     </div>
   );
 };
-
 
 export const ButtonContainer = styled(ButtonContainerUnstyled)`
   width: 100%;
@@ -61,4 +63,4 @@ export const ButtonContainer = styled(ButtonContainerUnstyled)`
     margin: 5px 0;
     color: #ffffff;
   }
-`
+`;

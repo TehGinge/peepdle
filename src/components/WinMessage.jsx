@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import gameWonGif from '../johnson-win.gif';
-import gameOverGif from '../mark-lose.gif';
+import gameWonGif from "../johnson-win.gif";
+import gameOverGif from "../mark-lose.gif";
 
 const WinMessageUnstyled = ({
   className,
@@ -13,7 +13,6 @@ const WinMessageUnstyled = ({
   numGuesses,
   gridInput,
 }) => {
-
   const renderGif = (numGuesses, gridInput, isGameWon, gaveUp) => {
     if (gaveUp) {
       return <img src={gameOverGif} alt="Game over" />;
@@ -25,9 +24,7 @@ const WinMessageUnstyled = ({
 
   return (
     <div className={className}>
-      {!gaveUp && (
-        <div className="win-message"></div>
-      )}
+      {!gaveUp && <div className="win-message"></div>}
       {renderGif(numGuesses, gridInput, isGameWon, gaveUp)}
       {currentQuote && currentQuote.quote && (
         <div className="full-quote">
@@ -56,8 +53,8 @@ export const WinMessage = styled(WinMessageUnstyled)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 40px;
-  margin-bottom: 50px;
+  margin-top: 10px;
+  margin-bottom: 40px;
 
   .win-message {
     margin: 1px 0;
@@ -71,12 +68,11 @@ export const WinMessage = styled(WinMessageUnstyled)`
   .episode {
     margin: 5px 0;
   }
-  
+
   img {
     max-width: 100%;
     max-height: 200px;
     object-fit: contain;
-    margin-bottom: 10px;
   }
 
   @media (max-width: 480px) {
