@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const KeyboardButton = ({ letter, onClick, disabled, customClass }) => {
 	return (
-		<button className={`keyboard-button ${customClass ? customClass : ""}`} onClick={onClick} disabled={disabled}>
+		<button className={`keyboard-button ${customClass ? customClass : ""}`} tabIndex={-1} onClick={onClick} disabled={disabled}>
 			{letter}
 		</button>
 	);
@@ -68,10 +68,19 @@ export const Keyboard = styled(KeyboardUnstyled)`
 		background-color: #ccc;
 	}
 
-	.keyboard-button.disabled {
-		background-color: #ccc;
-		color: #999;
-		cursor: not-allowed;
+	.correct-position.keyboard-button {
+		background-color: green;
+		color: white;
+	}
+
+	.in-word.keyboard-button {
+		background-color: darkorange;
+		color: white;
+	}
+
+	.not-in-word.keyboard-button {
+		background-color: dimgray;
+		color: white;
 	}
 
 	.keyboard-button.backspace {

@@ -34,7 +34,7 @@ const GridInputUnstyled = ({ className, gridInput, currentWord, numGuesses, isGa
 	}, [handleKeyboardClick, handleBackspaceClick, handleEnterClick, rootRef]);
 
 	return (
-		<div className={className} tabIndex="0" ref={rootRef}>
+		<div className={className} tabIndex={-1} ref={rootRef}>
 			{gridInput.map((row, rowIndex) => (
 				<div className="grid-input-row" key={`row-${rowIndex}`}>
 					{row.map((cell, colIndex) => {
@@ -47,8 +47,8 @@ const GridInputUnstyled = ({ className, gridInput, currentWord, numGuesses, isGa
 							} else if (currentWord.toLowerCase().includes(currentLetter.toLowerCase())) {
 								gridCellStyle = "in-word";
 							} else {
-                gridCellStyle = "not-in-word";
-              }
+								gridCellStyle = "not-in-word";
+							}
 						} else if (isGameWon) {
 							if (currentLetter.toLowerCase() === currentWord[colIndex].toLowerCase()) {
 								gridCellStyle = "correct-position";
@@ -56,7 +56,7 @@ const GridInputUnstyled = ({ className, gridInput, currentWord, numGuesses, isGa
 						}
 
 						return (
-							<div className={`grid-input-cell ${gridCellStyle}`} ref={inputRefs[rowIndex][colIndex]} disabled={rowIndex !== numGuesses} data-columns={colIndex}>
+							<div key={`${rowIndex} | ${colIndex}`} className={`grid-input-cell ${gridCellStyle}`} ref={inputRefs[rowIndex][colIndex]} disabled={rowIndex !== numGuesses} data-columns={colIndex}>
 								{cell}
 							</div>
 						);
@@ -93,20 +93,20 @@ const GridInput = styled(GridInputUnstyled)`
 		border-radius: 0.25rem;
 	}
 
-  .correct-position {
-    background-color: green;
-    color: white;
-  }
+	.correct-position {
+		background-color: green;
+		color: white;
+	}
 
-  .in-word {
-    background-color: darkorange;
-    color: white;
-  }
+	.in-word {
+		background-color: darkorange;
+		color: white;
+	}
 
-  .not-in-word {
-    background-color: dimgray;
-    color: white;
-  }
+	.not-in-word {
+		background-color: dimgray;
+		color: white;
+	}
 
 	@media (max-width: 768px) {
 		.grid-input-cell {

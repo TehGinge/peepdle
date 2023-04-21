@@ -5,15 +5,15 @@ const ButtonContainerUnstyled = ({
   className,
   revealAnswer,
   winStreak,
-  startNewGame
+  handleNewGamePress
 }) => {
   return (
     <div className={className}>
-      <button className="left-button button" onClick={revealAnswer}>
+      <button className="left-button button" tabIndex={-1} onClick={revealAnswer}>
         Give Up?
       </button>
       <div className="win-tally">Win Streak: {winStreak}</div>
-      <button className="right-button button" onClick={startNewGame}>
+      <button className="right-button button" tabIndex={-1} onClick={handleNewGamePress}>
         New Game
       </button>
     </div>
