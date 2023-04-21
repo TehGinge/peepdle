@@ -46,5 +46,6 @@ export const WordDisplayUnstyled = ({ className, currentWord, currentGuesses, qu
 
   .current-word {
     font-weight: bold;
+    white-space: nowrap;
   }
 `;
