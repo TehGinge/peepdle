@@ -11,6 +11,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: "src/index.html", // to import index.html file inside index.js
+      favicon: "src/assets/favicon.ico"
     }),
     new webpack.HotModuleReplacementPlugin(),
   ],
@@ -28,17 +29,17 @@ module.exports = {
         use: ['style-loader', 'css-loader'],
       },
       {
-        test: /\.gif$/,
+        test: /\.(png|jpe?g|gif|svg)$/i,
         use: [
           {
             loader: 'file-loader',
             options: {
               name: '[name].[ext]',
-              outputPath: 'images/'
-            }
-          }
-        ]
-      },
+              outputPath: 'images/',
+            },
+          },
+        ],
+      },      
     ]
   },
   resolve: {

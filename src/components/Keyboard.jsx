@@ -32,8 +32,13 @@ const KeyboardUnstyled = ({ className, onClick, guessedLetters, handleBackspaceC
 	const rows = [
 		letters.slice(0, 10),
 		letters.slice(10, 19),
-		[{ letter: "⌫", onClick: handleBackspaceClick, customClass: "backspace" }, ...letters.slice(19, 26), { letter: "↵", onClick: handleEnterClick, customClass: "enter" }],
+		[
+			{ letter: "⌫", onClick: handleBackspaceClick, customClass: "backspace" },
+			...letters.slice(19, 26),
+			{ letter: "↵", onClick: handleEnterClick, customClass: "enter" },
+		],
 	];
+
 	return (
 		<div className={className}>
 			<div className="keyboard">
@@ -56,7 +61,8 @@ export const Keyboard = styled(KeyboardUnstyled)`
 		cursor: pointer;
 		margin: 0.1rem;
 		border-radius: 0.25rem;
-		transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+		transition: background-color 0.1s ease-in-out, color 0.2s ease-in-out;
+		user-select: none;
 	}
 
 	.keyboard-button:hover {
@@ -121,13 +127,71 @@ export const Keyboard = styled(KeyboardUnstyled)`
 		font-size: 0.8rem;
 	}
 
+	@media (max-width: 520px) {
+		.keyboard-button {
+			font-size: 1rem;
+			height: 3.5rem;
+			width: 2.5rem;
+			margin: 0.2rem;
+		}
+		.keyboard-button.backspace {
+			width: 3.8rem;
+			min-width: 3.8rem;
+		}
+
+		.keyboard-button.enter {
+			width: 3.8rem;
+			min-width: 3.8rem;
+		}
+	}
+
 	@media (max-width: 480px) {
+		.keyboard-button {
+			font-size: 1rem;
+			height: 3.5rem;
+			width: 2.2rem;
+			margin: 0.2rem;
+		}
+		.keyboard-button.backspace {
+			width: 3.4rem;
+			min-width: 3.4rem;
+		}
+
+		.keyboard-button.enter {
+			width: 3.4rem;
+			min-width: 3.4rem;
+		}
+	}
+
+	@media (max-width: 420px) {
 		.keyboard-button {
 			font-size: 1rem;
 			height: 3rem;
 			width: 2rem;
-			margin: 0.15rem;
+			margin: 0.2rem;
 		}
+
+		.keyboard-button.backspace {
+			width: 3.2rem;
+			min-width: 3.2rem;
+		}
+
+		.keyboard-button.enter {
+			width: 3.2rem;
+			min-width: 3.2rem;
+		}
+		
+	}
+
+	@media (max-width: 390px) {
+		.keyboard-button {
+			font-size: 1rem;
+			padding: 5px;
+			height: 3rem;
+			width: 1.8rem;
+			margin: 0.2rem;
+		}
+
 		.keyboard-button.backspace {
 			width: 3rem;
 			min-width: 3rem;
@@ -137,5 +201,6 @@ export const Keyboard = styled(KeyboardUnstyled)`
 			width: 3rem;
 			min-width: 3rem;
 		}
+		
 	}
 `;

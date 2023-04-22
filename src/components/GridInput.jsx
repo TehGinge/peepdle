@@ -108,7 +108,7 @@ const GridInput = styled(GridInputUnstyled)`
 		color: white;
 	}
 
-	@media (max-width: 768px) {
+	@media (max-width: 520px) {
 		.grid-input-cell {
 			font-size: 30px;
 			width: 45px;

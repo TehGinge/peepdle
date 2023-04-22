@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import gameWonGif from "../johnson-win.gif";
-import gameOverGif from "../mark-lose.gif";
+import gameWonGif from "../assets/johnson-win.gif";
+import gameOverGif from "../assets/mark-lose.gif";
 
 const WinMessageUnstyled = ({
   className,

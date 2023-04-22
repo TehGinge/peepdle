@@ -2,6 +2,7 @@ import React from "react";
 import * as ReactDOMClient from "react-dom/client";
 import { App } from "./app";
 import { createGlobalStyle } from "styled-components";
+import './fonts/fonts.css';
 
 const GlobalStyle = createGlobalStyle`
   html {
@@ -14,7 +15,7 @@ const GlobalStyle = createGlobalStyle`
     color: white;
     margin: 0;
     height: 100%;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   }
 
   #root {
