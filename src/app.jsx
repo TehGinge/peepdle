@@ -292,15 +292,13 @@ export const App = styled(AppUnstyled)`
 `;
 
 function ResetKeyboardButtonStyles() {
-	const buttons = document.querySelectorAll(".keyboard-button");
-	buttons.forEach((button) => {
+	GetKeyboardButtons().forEach((button) => {
 		button.className = `keyboard-button`;
 	});
 }
 
 function SetKeyboardButtonStyles(guessedWord, correctWord) {
-	const buttons = document.querySelectorAll(".keyboard-button");
-	buttons.forEach((button) => {
+	GetKeyboardButtons().forEach((button) => {
 		const letter = button.innerText.toLowerCase();
 		const letterInCurrentWordIndex = correctWord.toLowerCase().indexOf(letter);
 		if (guessedWord.includes(letter)) {
@@ -315,4 +313,7 @@ function SetKeyboardButtonStyles(guessedWord, correctWord) {
 			button.className = `keyboard-button ${buttonClass}`;
 		}
 	});
+}
+function GetKeyboardButtons() {
+	return Array.from(document.querySelectorAll(".keyboard-button")).filter((button) => !button.classList.contains("backspace") && !button.classList.contains("enter"));
 }
