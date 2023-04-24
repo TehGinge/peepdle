@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Keyboard } from "./components/Keyboard";
 import { useEffect } from "react";
 import { useLayoutEffect } from "react";
@@ -6,7 +6,7 @@ import { useLayoutEffect } from "react";
 import quotes from "./peepdle-data.json";
 import excludedWords from "./excludedWords";
 import styled from "styled-components";
-import { ButtonContainer } from "./components/ButtonContainer";
+import { HeaderContainer } from "./components/HeaderContainer";
 import { Quote } from "./components/Quote";
 import { WinMessage } from "./components/WinMessage";
 import { Guesses } from "./components/Guesses";
@@ -22,6 +22,8 @@ const AppUnstyled = ({ className, maxGuesses }) => {
 	const [gameStarted, setGameStarted] = useState(false);
 	const [hintsLeft, setHintsLeft] = useState(2);
 	const [hintIndex, setHintIndex] = useState(0);
+  	const [minWordLength] = useState(4); // Set minimum word length
+  	const [maxWordLength, setMaxWordLength] = useState(8); // Set maximum word length
 	const [gaveUp, setGaveUp] = useState(false);
 	const [gridInput, setGridInput] = useState(Array.from({ length: maxGuesses }, () => Array(currentWord.length).fill("")));
 
@@ -48,6 +50,11 @@ const AppUnstyled = ({ className, maxGuesses }) => {
 		}
 	}, [gameStarted, inputRefs]);
 
+  const handleNewGamePress = () => {
+		ResetKeyboardButtonStyles();
+		startNewGame();
+	};
+
 	const processQuote = (quote) => {
 		const cleanedQuote = quote.replace(/\[.*?\]/g, ""); // Remove content within square brackets
 		const words = cleanedQuote
@@ -56,41 +63,36 @@ const AppUnstyled = ({ className, maxGuesses }) => {
 		return words;
 	};
 
-	const handleNewGamePress = () => {
-		ResetKeyboardButtonStyles();
-		startNewGame();
-	};
-
-	const startNewGame = () => {
-		const validQuotes = quotes.results.filter((quoteObj) => {
-			const words = processQuote(quoteObj.quote);
-			return quoteObj.quote && words.length > 1; // Exclude quotes with only one word
-		});
-
-		const randomQuote = validQuotes[Math.floor(Math.random() * validQuotes.length)];
-		const words = processQuote(randomQuote.quote).filter((word) => word.length >= 5); // Set minimum word length
-
-		const excludedWordSet = new Set(excludedWords.map((word) => word.toLowerCase()));
-
-		const filteredWords = words.filter(
-			(word) => !excludedWordSet.has(word.toLowerCase()) && word.length <= 8 // Set maximum word length
-		);
-
-		if (filteredWords.length === 0) {
-			startNewGame();
-			return;
-		}
-
-		const selectedWord = filteredWords[Math.floor(Math.random() * filteredWords.length)];
-		setCurrentWord(selectedWord.toLowerCase());
-		setCurrentGuesses([]);
-		setCurrentQuote(randomQuote);
-		setNumGuesses(0);
-		setCompleted(false);
-		setGameStarted(true);
-		setGaveUp(false);
-		setHintIndex(0);
-	};
+  const startNewGame = () => {
+    const validQuotes = quotes.results.filter((quoteObj) => {
+      const words = processQuote(quoteObj.quote);
+      return quoteObj.quote && words.length > 1; // Exclude quotes with only one word
+    });
+  
+    const randomQuote = validQuotes[Math.floor(Math.random() * validQuotes.length)];
+    const words = processQuote(randomQuote.quote);
+  
+    const excludedWordSet = new Set(excludedWords.map((word) => word.toLowerCase()));
+  
+    const filteredWords = words.filter(
+      (word) => !excludedWordSet.has(word.toLowerCase()) && word.length >= minWordLength && word.length <= maxWordLength
+    );
+  
+    if (filteredWords.length === 0) {
+      startNewGame();
+      return;
+    }
+  
+    const selectedWord = filteredWords[Math.floor(Math.random() * filteredWords.length)];
+    setCurrentWord(selectedWord.toLowerCase());
+    setCurrentGuesses([]);
+    setCurrentQuote(randomQuote);
+    setNumGuesses(0);
+    setCompleted(false);
+    setGameStarted(true);
+    setGaveUp(false);
+    setHintIndex(0);
+  };
 
 	const makeGuess = (guess, rowIndex) => {
 		if (guess.length === currentWord.length && /^[a-zA-Z]+$/.test(guess) && rowIndex === numGuesses) {
@@ -231,12 +233,45 @@ const AppUnstyled = ({ className, maxGuesses }) => {
 		}
 	};
 
+  const countEligibleWords = () => {
+    const excludedWordSet = new Set(excludedWords.map((word) => word.toLowerCase()));
+    let eligibleWordsCount = 0;
+
+    quotes.results.forEach((quoteObj) => {
+      const words = processQuote(quoteObj.quote);
+      const validWords = words.filter(
+        (word) => !excludedWordSet.has(word.toLowerCase()) && word.length >= minWordLength && word.length <= maxWordLength
+      );
+      eligibleWordsCount += validWords.length;
+    });
+
+    return eligibleWordsCount;
+  };
+
+  const totalEligibleWordsCount = useMemo(() => countEligibleWords(), [quotes, minWordLength, maxWordLength]);
+
+  const countExcludedWords = () => {
+    const excludedWordSet = new Set(excludedWords.map((word) => word.toLowerCase()));
+    let excludedWordsCount = 0;
+  
+    quotes.results.forEach((quoteObj) => {
+      const words = processQuote(quoteObj.quote);
+      const excludedWordsInQuote = words.filter(
+        (word) => excludedWordSet.has(word.toLowerCase()) && word.length >= minWordLength && word.length <= maxWordLength
+      );
+      excludedWordsCount += excludedWordsInQuote.length;
+    });
+  
+    return excludedWordsCount;
+  };  
+  
+  const totalExcludedWordsCount = useMemo(() => countExcludedWords(), [quotes, minWordLength, maxWordLength]);
+
 	return (
 		<div className={className}>
-			<ButtonContainer revealAnswer={revealAnswer} winStreak={winStreak} handleNewGamePress={handleNewGamePress} />
+			<HeaderContainer revealAnswer={revealAnswer} winStreak={winStreak} handleNewGamePress={handleNewGamePress} totalEligibleWordsCount={totalEligibleWordsCount} totalExcludedWordsCount={totalExcludedWordsCount} maxWordLength={maxWordLength} setMaxWordLength={setMaxWordLength}  />
 			<div className="centered-container">
 				{currentQuote && currentQuote.quote && <Quote currentWord={currentWord} currentGuesses={currentGuesses} currentQuote={currentQuote} gaveUp={gaveUp} />}
-
 				{/* This is why you need a context provider 😂 */}
 				<Guesses
 					gridInput={gridInput}
@@ -253,7 +288,7 @@ const AppUnstyled = ({ className, maxGuesses }) => {
 					currentGuesses={currentGuesses}
 					gaveUp={gaveUp}
 				/>
-				<Hint hintIndex={hintIndex} currentQuote={currentQuote} useHint={useHint} hintsLeft={hintsLeft} gameStarted={gameStarted} completed={completed} />
+				<Hint hintIndex={hintIndex} currentQuote={currentQuote} useHint={useHint} hintsLeft={hintsLeft} gameStarted={gameStarted} completed={completed} handleNewGamePress={handleNewGamePress} revealAnswer={revealAnswer} />
 				{gameStarted && completed && (
 					<WinMessage
 						gaveUp={gaveUp}
@@ -267,7 +302,7 @@ const AppUnstyled = ({ className, maxGuesses }) => {
 					/>
 				)}
 			</div>
-			<Keyboard onClick={handleKeyboardClick} guessedLetters={currentGuesses} currentWord={currentWord} handleBackspaceClick={handleBackspaceClick} handleEnterClick={handleEnterClick} />
+			<Keyboard onClick={handleKeyboardClick} guessedLetters={currentGuesses} currentWord={currentWord} handleBackspaceClick={handleBackspaceClick} handleEnterClick={handleEnterClick} revealAnswer={revealAnswer} handleNewGamePress={handleNewGamePress} />
 		</div>
 	);
 };
@@ -284,7 +319,7 @@ export const App = styled(AppUnstyled)`
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		max-width: 600px;
+		max-width: 480px;
 		padding-left: 10px;
 		padding-right: 10px;
 		padding-top: 10px;

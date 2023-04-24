@@ -27,7 +27,7 @@ const KeyboardRow = ({ letters, onClick, guessedLetters }) => {
 	);
 };
 
-const KeyboardUnstyled = ({ className, onClick, guessedLetters, handleBackspaceClick, handleEnterClick }) => {
+const KeyboardUnstyled = ({ className, onClick, guessedLetters, handleBackspaceClick, handleEnterClick, revealAnswer, handleNewGamePress }) => {
 	const letters = "qwertyuiopasdfghjklzxcvbnm".split("");
 	const rows = [
 		letters.slice(0, 10),
@@ -41,6 +41,14 @@ const KeyboardUnstyled = ({ className, onClick, guessedLetters, handleBackspaceC
 
 	return (
 		<div className={className}>
+		<div className="buttons-container">
+		  <button className="left-button button" tabIndex={-1} onClick={revealAnswer}>
+			Give Up?
+		  </button>
+		  <button className="right-button button" tabIndex={-1} onClick={handleNewGamePress}>
+			New Game
+		  </button>
+		</div>
 			<div className="keyboard">
 				{rows.map((row, index) => (
 					<KeyboardRow key={index} letters={row} onClick={onClick} guessedLetters={guessedLetters} />
@@ -126,6 +134,40 @@ export const Keyboard = styled(KeyboardUnstyled)`
 	.enter {
 		font-size: 0.8rem;
 	}
+
+	.buttons-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.left-button,
+  .right-button {
+    display: flex;
+    justify-content: flex-start;
+    max-width: 50%;
+    padding: 10px;
+    background-color: #363636;
+    border: 2px solid #d9d9d9;
+    text-transform: uppercase;
+    border-radius: 7px;
+    color: #ffffff;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+    user-select: none;
+  }
+
+  .right-button {
+    justify-content: flex-end;
+  }
+
+  .left-button:hover,
+  .right-button:hover {
+    background-color: #fdfdfd;
+    color: #000000;
+  }
 
 	@media (max-width: 520px) {
 		.keyboard-button {
