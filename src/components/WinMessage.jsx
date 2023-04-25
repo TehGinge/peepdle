@@ -3,6 +3,15 @@ import styled from "styled-components";
 import gameWonGif from "../assets/johnson-win.gif";
 import gameOverGif from "../assets/mark-lose.gif";
 
+const QuoteWrapper = styled.div`
+  background-color: #383838;
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 20px;
+  align-items: center;
+  width: 95%;
+`;
+
 const WinMessageUnstyled = ({
   className,
   gaveUp,
@@ -26,24 +35,28 @@ const WinMessageUnstyled = ({
     <div className={className}>
       {!gaveUp && <div className="win-message"></div>}
       {renderGif(numGuesses, gridInput, isGameWon, gaveUp)}
-      {currentQuote && currentQuote.quote && (
-        <div className="full-quote">
-          <span>
-            {`"`}
-            {highlightCurrentWord(currentQuote.quote, currentWord).map(
-              (part, index) =>
-                part.toLowerCase() === currentWord.toLowerCase() ? (
-                  <strong key={index}>{part}</strong>
-                ) : (
-                  <span key={index}>{part}</span>
-                )
-            )}
-            {`" - ${currentQuote.person}`}
-          </span>
-        </div>
-      )}
-      {currentQuote && currentQuote.episode && (
-        <div className="episode"> {currentQuote.episode}</div>
+      {currentQuote && (currentQuote.quote || currentQuote.episode) && (
+        <QuoteWrapper>
+          {currentQuote.quote && (
+            <div className="full-quote">
+              <span>
+                {`"`}
+                {highlightCurrentWord(currentQuote.quote, currentWord).map(
+                  (part, index) =>
+                    part.toLowerCase() === currentWord.toLowerCase() ? (
+                      <span key={index} style={{ textTransform: 'uppercase', fontWeight: 'bold' }}>{part}</span>
+                    ) : (
+                      <span key={index}>{part}</span>
+                    )
+                )}
+                {`" - ${currentQuote.person}`}
+              </span>
+            </div>
+          )}
+          {currentQuote.episode && (
+            <div className="episode"> {currentQuote.episode}</div>
+          )}
+        </QuoteWrapper>
       )}
     </div>
   );
@@ -53,20 +66,18 @@ export const WinMessage = styled(WinMessageUnstyled)`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 10px;
-  margin-bottom: 40px;
 
   .win-message {
     margin: 1px 0;
   }
 
   .full-quote {
-    margin-top: 10px;
     text-align: center;
   }
 
   .episode {
     margin: 5px 0;
+    text-align: center;
   }
 
   img {

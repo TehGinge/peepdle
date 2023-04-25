@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { Hint } from './HintButton';
 
 const KeyboardButton = ({ letter, onClick, disabled, customClass }) => {
 	return (
@@ -27,7 +28,7 @@ const KeyboardRow = ({ letters, onClick, guessedLetters }) => {
 	);
 };
 
-const KeyboardUnstyled = ({ className, onClick, guessedLetters, handleBackspaceClick, handleEnterClick, revealAnswer, handleNewGamePress }) => {
+const KeyboardUnstyled = ({ className, onClick, guessedLetters, handleBackspaceClick, handleEnterClick, revealAnswer, handleNewGamePress, useHint, hintsLeft, gameStarted, completed, hintIndex, currentQuote }) => {
 	const letters = "qwertyuiopasdfghjklzxcvbnm".split("");
 	const rows = [
 		letters.slice(0, 10),
@@ -45,6 +46,12 @@ const KeyboardUnstyled = ({ className, onClick, guessedLetters, handleBackspaceC
 		  <button className="left-button button" tabIndex={-1} onClick={revealAnswer}>
 			Give Up?
 		  </button>
+		  <Hint
+          useHint={useHint}
+          hintsLeft={hintsLeft}
+          gameStarted={gameStarted}
+          completed={completed}
+        />
 		  <button className="right-button button" tabIndex={-1} onClick={handleNewGamePress}>
 			New Game
 		  </button>
@@ -139,14 +146,14 @@ export const Keyboard = styled(KeyboardUnstyled)`
   display: flex;
   justify-content: space-between;
   margin-bottom: 1rem;
+  align-items: baseline;
 }
 
 .left-button,
   .right-button {
-    display: flex;
     justify-content: flex-start;
     max-width: 50%;
-    padding: 10px;
+    padding: 5px;
     background-color: #363636;
     border: 2px solid #d9d9d9;
     text-transform: uppercase;

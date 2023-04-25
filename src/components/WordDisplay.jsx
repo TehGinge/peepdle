@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 
-
 export const WordDisplayUnstyled = ({ className, currentWord, currentGuesses, quote, gaveUp }) => {
   const wordsArray = quote.split(" ");
   const displayQuote = wordsArray.map((word, index) => {

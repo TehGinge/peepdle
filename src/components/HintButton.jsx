@@ -36,24 +36,16 @@ const HintButton = styled.button`
   }
 `;
 
-const HintText = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 5px;
-  width: 100%;
-`;
-
-export const Hint = ({ hintIndex, currentQuote, useHint, hintsLeft, gameStarted, completed }) => {
+export const Hint = ({ useHint, hintsLeft, gameStarted, completed }) => {
   return (
     <HintContainer>
-      <HintButton tabIndex={-1} onClick={useHint} disabled={hintsLeft === 0 || !gameStarted || completed}>
+      <HintButton
+        tabIndex={-1}
+        onClick={useHint}
+        disabled={hintsLeft === 0 || !gameStarted || completed}
+      >
         Use Hint ({hintsLeft})
       </HintButton>
-      <HintText>
-        {hintIndex >= 1 && currentQuote && currentQuote.episode && <div>Hint 1 - Episode: {currentQuote.episode}</div>}
-        {hintIndex === 2 && currentQuote && currentQuote.person && <div>Hint 2 - Character: {currentQuote.person}</div>}
-      </HintText>
     </HintContainer>
   );
 };
