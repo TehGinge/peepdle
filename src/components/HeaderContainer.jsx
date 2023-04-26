@@ -1,22 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
-import Sidebar from './Sidebar';
 import "../fonts/fonts.css";
 
 const HeaderUnstyled = ({
   className,
   winStreak,
-  totalEligibleWordsCount,
-  totalExcludedWordsCount,
-  setMaxWordLength,
-  maxWordLength,
+  menuVisible,
+  toggleMenu,
+  hamburgerRef,
 }) => {
-  const [menuVisible, setMenuVisible] = useState(false);
-
-  const toggleMenu = () => {
-    setMenuVisible(!menuVisible);
-  };
-
   return (
     <div className={className}>
       <div className="header-container">
@@ -32,7 +24,11 @@ const HeaderUnstyled = ({
           </header>
         </div>
         <div className="hamburger-container">
-          <div className="hamburger-menu" onClick={toggleMenu}>
+          <div
+            className="hamburger-menu"
+            onClick={toggleMenu}
+            ref={hamburgerRef}
+          >
             <div className={`hamburger-icon ${menuVisible ? "open" : ""}`}>
               <span className="bar bar1"></span>
               <span className="bar bar2"></span>
@@ -41,14 +37,6 @@ const HeaderUnstyled = ({
           </div>
         </div>
       </div>
-      <Sidebar 
-      menuVisible={menuVisible} 
-      totalEligibleWordsCount={totalEligibleWordsCount} 
-      totalExcludedWordsCount={totalExcludedWordsCount} 
-      maxWordLength={maxWordLength} 
-      setMaxWordLength={setMaxWordLength}
-      toggleMenu={toggleMenu}
-      />
     </div>
   );
 };
@@ -60,6 +48,7 @@ export const HeaderContainer = styled(HeaderUnstyled)`
   font-size: 20px;
   background-color: #3a3a3a;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2000;
 
   .logo-container {
     display: flex;
@@ -91,13 +80,13 @@ export const HeaderContainer = styled(HeaderUnstyled)`
     font-weight: bold;
   }
 
-.header-container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-evenly;
-  flex-wrap: wrap;
-}
+  .header-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+  }
 
   h1 {
     padding-right: 5px;

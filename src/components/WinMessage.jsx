@@ -5,7 +5,8 @@ import gameOverGif from "../assets/mark-lose.gif";
 
 const QuoteWrapper = styled.div`
   background-color: #383838;
-  border-radius: 10px;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
   padding: 10px;
   margin-top: 20px;
   text-align: center;
@@ -20,6 +21,8 @@ const WinMessageUnstyled = ({
   numGuesses,
   gridInput,
   handleNewGamePress,
+  winStreak,
+  achievedStreak
 }) => {
   const renderGif = (numGuesses, gridInput, gaveUp) => {
     if (gaveUp) {
@@ -40,18 +43,17 @@ const WinMessageUnstyled = ({
                 {`"`}
                 {highlightCurrentWord(currentQuote.quote, currentWord).map(
                   (part, index) =>
-                    part.toLowerCase() === currentWord.toLowerCase() ? (
+                    part.isHighlighted ? (
                       <span
                         key={index}
                         style={{
-                          textTransform: "uppercase",
                           fontWeight: "bold",
                         }}
                       >
-                        {part}
+                        {part.text}
                       </span>
                     ) : (
-                      <span key={index}>{part}</span>
+                      <span key={index}>{part.text}</span>
                     )
                 )}
                 {`" - ${currentQuote.person}`}
@@ -61,15 +63,21 @@ const WinMessageUnstyled = ({
           {currentQuote.episode && (
             <div className="episode"> {currentQuote.episode}</div>
           )}
-          <button
-            className="next-word"
-            tabIndex={-1}
-            onClick={handleNewGamePress}
-          >
-            Next Word
-          </button>
         </QuoteWrapper>
       )}
+      <div className="win-tally">
+        <div className="win-tally-label">Win Streak</div>
+        <div className="win-tally-counter">
+          {gaveUp ? achievedStreak : winStreak}
+        </div>
+        <button
+          className="next-word"
+          tabIndex={-1}
+          onClick={handleNewGamePress}
+        >
+          Next Word
+        </button>
+      </div>
     </div>
   );
 };
@@ -77,6 +85,7 @@ const WinMessageUnstyled = ({
 export const WinMessage = styled(WinMessageUnstyled)`
   display: flex;
   flex-direction: column;
+  text-align: center;
 
   .win-message {
     margin: 1px 0;
@@ -110,6 +119,29 @@ export const WinMessage = styled(WinMessageUnstyled)`
     cursor: pointer;
     transition: background-color 0.2s ease-in-out;
     user-select: none;
+  }
+
+  .win-tally {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgb(49, 48, 48);
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    padding: 3.5px 3px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .win-tally-label {
+    color: #ffffff;
+    font-size: 12px;
+  }
+
+  .win-tally-counter {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    padding-bottom: 5px;
   }
 
   @media (max-width: 480px) {

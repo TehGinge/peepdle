@@ -49,7 +49,7 @@ export const Quote = styled(QuoteUnstyled)`
   }
 
   .quote-container {
-    max-height: 200px;
+    max-height: 270px;
     overflow: auto;
     margin-bottom: 5px;
   }

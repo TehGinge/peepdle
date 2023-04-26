@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import { Keyboard } from "./components/Keyboard";
 import { useEffect } from "react";
 import { useLayoutEffect } from "react";
@@ -10,8 +10,8 @@ import { HeaderContainer } from "./components/HeaderContainer";
 import { Quote } from "./components/Quote";
 import { WinMessage } from "./components/WinMessage";
 import { Guesses } from "./components/Guesses";
-import { Hint } from "./components/HintButton";
-import { Modal } from './components/Modal';
+import { Modal } from "./components/Modal";
+import { Sidebar } from "./components/Sidebar";
 
 const AppUnstyled = ({ className, maxGuesses }) => {
   const [currentWord, setCurrentWord] = useState("");
@@ -20,6 +20,8 @@ const AppUnstyled = ({ className, maxGuesses }) => {
   const [completed, setCompleted] = useState(false);
   const [isGameWon, setIsGameWon] = useState(false);
   const [winStreak, setWinStreak] = useState(0);
+  const [achievedStreak, setAchievedStreak] = useState(0);
+  const [personalBest, setPersonalBest] = useState(0);
   const [currentQuote, setCurrentQuote] = useState({});
   const [gameStarted, setGameStarted] = useState(false);
   const [hintsLeft, setHintsLeft] = useState(2);
@@ -34,17 +36,17 @@ const AppUnstyled = ({ className, maxGuesses }) => {
   );
 
   useEffect(() => {
-	if (isGameWon) {
-	  setSkips(skips + 1);
-	}
+    if (isGameWon) {
+      setSkips(skips + 1);
+    }
   }, [isGameWon]);
-  
+
   // Handle skip button press
   const handleSkipPress = () => {
-	if (skips > 0) {
-	  setSkips(skips - 1);
-	  handleNewGamePress();
-	}
+    if (skips > 0) {
+      setSkips(skips - 1);
+      handleNewGamePress();
+    }
   };
 
   useEffect(() => {
@@ -56,11 +58,23 @@ const AppUnstyled = ({ className, maxGuesses }) => {
   }, [currentWord]);
 
   useEffect(() => {
-    const cookieValue = document.cookie.replace(
+    const personalBestCookieValue = document.cookie.replace(
+      /(?:(?:^|.*;\s*)personalBest\s*\=\s*([^;]*).*$)|^.*$/,
+      "$1"
+    );
+    setPersonalBest(parseInt(personalBestCookieValue) || 0);
+  }, []);
+
+  useEffect(() => {
+    document.cookie = `personalBest=${personalBest}`;
+  }, [personalBest]);
+
+  useEffect(() => {
+    const winStreakCookieValue = document.cookie.replace(
       /(?:(?:^|.*;\s*)winStreak\s*\=\s*([^;]*).*$)|^.*$/,
       "$1"
     );
-    setWinStreak(parseInt(cookieValue) || 0);
+    setWinStreak(parseInt(winStreakCookieValue) || 0);
   }, []);
 
   useEffect(() => {
@@ -125,7 +139,7 @@ const AppUnstyled = ({ className, maxGuesses }) => {
     setCompleted(false);
     setGameStarted(true);
     setGaveUp(false);
-	setIsGameWon(false);
+    setIsGameWon(false);
     setHintIndex(0);
   };
 
@@ -144,16 +158,16 @@ const AppUnstyled = ({ className, maxGuesses }) => {
 
       if (!completed && guess.toLowerCase() === currentWord) {
         setCompleted(true);
-		setShowModal(true);
+        setShowModal(true);
         setWinStreak(winStreak + 1);
-		setIsGameWon(true);
+        setIsGameWon(true);
         return true; // Return true when the guess is correct
       } else {
         setNumGuesses(numGuesses + 1);
 
         if (numGuesses + 1 >= maxGuesses) {
           resetStreak();
-		  setShowModal(true);
+          setShowModal(true);
           revealAnswer(); // Reveal the answer when there are no guesses remaining
         }
       }
@@ -192,16 +206,20 @@ const AppUnstyled = ({ className, maxGuesses }) => {
   };
 
   const revealAnswer = () => {
-	if (!completed) {
-	setCompleted(true);
-	setGaveUp(true);
-	setShowModal(true);
-	resetStreak();
-	setSkips(5);
-	}
+    if (!completed) {
+      setCompleted(true);
+      setGaveUp(true);
+      setShowModal(true);
+      resetStreak();
+      setSkips(5);
+    }
   };
 
   const resetStreak = () => {
+    if (winStreak > personalBest) {
+      setPersonalBest(winStreak);
+    }
+    setAchievedStreak(winStreak);
     setWinStreak(0);
   };
 
@@ -221,26 +239,23 @@ const AppUnstyled = ({ className, maxGuesses }) => {
   }, [completed, gaveUp]);
 
   const highlightCurrentWord = (quote, word) => {
-    const quoteLower = quote.toLowerCase();
+    const quoteWords = quote.split(/(\s+)/);
     const wordLower = word.toLowerCase();
-    const parts = [];
-    let lastIndex = 0;
 
-    while (lastIndex < quote.length) {
-      const wordIndex = quoteLower.indexOf(wordLower, lastIndex);
-      if (wordIndex === -1) break;
-
-      const beforeWord = quote.slice(lastIndex, wordIndex);
-      const matchedWord = quote.slice(wordIndex, wordIndex + word.length);
-
-      parts.push(beforeWord);
-      parts.push(matchedWord);
-      lastIndex = wordIndex + word.length;
-    }
-
-    if (lastIndex < quote.length) {
-      parts.push(quote.slice(lastIndex));
-    }
+    const parts = quoteWords.map((quoteWord, index) => {
+      const quoteWordLower = quoteWord.toLowerCase().replace(/[^a-zA-Z]/g, "");
+      if (quoteWordLower === wordLower) {
+        return {
+          text: quoteWord.replace(/[a-zA-Z]/g, (char) => char.toUpperCase()),
+          isHighlighted: true,
+        };
+      } else {
+        return {
+          text: quoteWord,
+          isHighlighted: false,
+        };
+      }
+    });
 
     return parts;
   };
@@ -333,13 +348,29 @@ const AppUnstyled = ({ className, maxGuesses }) => {
     [quotes, minWordLength, maxWordLength]
   );
 
-  
-const handleShowQuote = () => {
-	setShowModal(true);
+  const handleShowQuote = () => {
+    setShowModal(true);
+  };
+
+  const [menuVisible, setMenuVisible] = useState(false);
+  const hamburgerRef = useRef();
+
+  const toggleMenu = () => {
+    setMenuVisible(!menuVisible);
   };
 
   return (
     <div className={className}>
+      <Sidebar
+        menuVisible={menuVisible}
+        totalEligibleWordsCount={totalEligibleWordsCount}
+        totalExcludedWordsCount={totalExcludedWordsCount}
+        maxWordLength={maxWordLength}
+        setMaxWordLength={setMaxWordLength}
+        toggleMenu={toggleMenu}
+        personalBest={personalBest}
+        hamburgerRef={hamburgerRef}
+      />
       <HeaderContainer
         revealAnswer={revealAnswer}
         winStreak={winStreak}
@@ -348,6 +379,10 @@ const handleShowQuote = () => {
         totalExcludedWordsCount={totalExcludedWordsCount}
         maxWordLength={maxWordLength}
         setMaxWordLength={setMaxWordLength}
+        personalBest={personalBest}
+        toggleMenu={toggleMenu}
+        hamburgerRef={hamburgerRef}
+        menuVisible={menuVisible}
       />
       <div className="centered-container">
         {currentQuote && currentQuote.quote && (
@@ -356,7 +391,7 @@ const handleShowQuote = () => {
             currentGuesses={currentGuesses}
             currentQuote={currentQuote}
             gaveUp={gaveUp}
-			hintIndex={hintIndex}
+            hintIndex={hintIndex}
           />
         )}
         {/* This is why you need a context provider 😂 */}
@@ -376,19 +411,21 @@ const handleShowQuote = () => {
           gaveUp={gaveUp}
         />
         {gameStarted && completed && showModal && (
-			 <Modal onClose={() => setShowModal(false)} show={showModal}>
-          <WinMessage
-            gaveUp={gaveUp}
-            currentQuote={currentQuote}
-            highlightCurrentWord={highlightCurrentWord}
-            currentWord={currentWord}
-            completed={completed}
-            numGuesses={numGuesses}
-            gridInput={gridInput}
-            hintIndex={hintIndex}
-			handleNewGamePress={handleNewGamePress}
-          />
-		  </Modal>
+          <Modal onClose={() => setShowModal(false)} show={showModal}>
+            <WinMessage
+              gaveUp={gaveUp}
+              currentQuote={currentQuote}
+              highlightCurrentWord={highlightCurrentWord}
+              currentWord={currentWord}
+              completed={completed}
+              numGuesses={numGuesses}
+              gridInput={gridInput}
+              hintIndex={hintIndex}
+              handleNewGamePress={handleNewGamePress}
+              winStreak={winStreak}
+              achievedStreak={achievedStreak}
+            />
+          </Modal>
         )}
       </div>
       <Keyboard
@@ -399,13 +436,13 @@ const handleShowQuote = () => {
         handleEnterClick={handleEnterClick}
         revealAnswer={revealAnswer}
         handleSkipPress={handleSkipPress}
-		handleNewGamePress={handleNewGamePress}
-		useHint={useHint}
-		hintsLeft={hintsLeft}
-		gameStarted={gameStarted}
-		completed={completed}
-		skips={skips}
-		handleShowQuote={handleShowQuote}
+        handleNewGamePress={handleNewGamePress}
+        useHint={useHint}
+        hintsLeft={hintsLeft}
+        gameStarted={gameStarted}
+        completed={completed}
+        skips={skips}
+        handleShowQuote={handleShowQuote}
       />
     </div>
   );

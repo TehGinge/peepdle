@@ -199,7 +199,14 @@ const excludedWords = [
   "ready",
   "dinner",
   "sorry",
-  "actually"
+  "actually",
+  "wheres",
+  "theyve",
+  "gets",
+  "sure",
+  "shes",
+  "hes",
+  "youll"
 ];
 
 export default excludedWords;

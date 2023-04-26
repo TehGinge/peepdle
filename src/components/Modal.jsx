@@ -19,15 +19,6 @@ const ModalUnstyled = ({ className, children, onClose, show }) => {
       }}
     >
       <div className="modal-content">
-        <button
-          className="modal-close-button"
-          onClick={() => {
-            setVisible(false);
-            onClose();
-          }}
-        >
-          &times;
-        </button>
         {children}
       </div>
     </div>
@@ -59,7 +50,8 @@ export const Modal = styled(ModalUnstyled)`
     padding: 15px;
     border-radius: 10px;
     position: relative;
-    max-width: 90%;
+    max-width: 30%;
+    min-width: 350px;
     max-height: 90%;
     overflow: auto;
     transform: translateY(-50px);
@@ -72,19 +64,4 @@ export const Modal = styled(ModalUnstyled)`
     opacity: 1 !important;
   }
 
-  .modal-close-button {
-    position: absolute;
-    color: #ffffff;
-    top: 5px;
-    right: 5px;
-    background: none;
-    border: none;
-    font-size: 1.2rem;
-    cursor: pointer;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  }
-
-  .modal-close-button:hover {
-    color: #dddddd;
-  }
 `;
