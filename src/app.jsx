@@ -18,6 +18,7 @@ const AppUnstyled = ({ className, maxGuesses }) => {
   const [currentGuesses, setCurrentGuesses] = useState([]);
   const [numGuesses, setNumGuesses] = useState(0);
   const [completed, setCompleted] = useState(false);
+  const [isGameWon, setIsGameWon] = useState(false);
   const [winStreak, setWinStreak] = useState(0);
   const [currentQuote, setCurrentQuote] = useState({});
   const [gameStarted, setGameStarted] = useState(false);
@@ -27,9 +28,24 @@ const AppUnstyled = ({ className, maxGuesses }) => {
   const [maxWordLength, setMaxWordLength] = useState(8); // Set maximum word length
   const [gaveUp, setGaveUp] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [skips, setSkips] = useState(5);
   const [gridInput, setGridInput] = useState(
     Array.from({ length: maxGuesses }, () => Array(currentWord.length).fill(""))
   );
+
+  useEffect(() => {
+	if (isGameWon) {
+	  setSkips(skips + 1);
+	}
+  }, [isGameWon]);
+  
+  // Handle skip button press
+  const handleSkipPress = () => {
+	if (skips > 0) {
+	  setSkips(skips - 1);
+	  handleNewGamePress();
+	}
+  };
 
   useEffect(() => {
     setGridInput(
@@ -109,6 +125,7 @@ const AppUnstyled = ({ className, maxGuesses }) => {
     setCompleted(false);
     setGameStarted(true);
     setGaveUp(false);
+	setIsGameWon(false);
     setHintIndex(0);
   };
 
@@ -129,6 +146,7 @@ const AppUnstyled = ({ className, maxGuesses }) => {
         setCompleted(true);
 		setShowModal(true);
         setWinStreak(winStreak + 1);
+		setIsGameWon(true);
         return true; // Return true when the guess is correct
       } else {
         setNumGuesses(numGuesses + 1);
@@ -179,9 +197,9 @@ const AppUnstyled = ({ className, maxGuesses }) => {
 	setGaveUp(true);
 	setShowModal(true);
 	resetStreak();
+	setSkips(5);
 	}
   };
-  
 
   const resetStreak = () => {
     setWinStreak(0);
@@ -315,6 +333,11 @@ const AppUnstyled = ({ className, maxGuesses }) => {
     [quotes, minWordLength, maxWordLength]
   );
 
+  
+const handleShowQuote = () => {
+	setShowModal(true);
+  };
+
   return (
     <div className={className}>
       <HeaderContainer
@@ -359,10 +382,11 @@ const AppUnstyled = ({ className, maxGuesses }) => {
             currentQuote={currentQuote}
             highlightCurrentWord={highlightCurrentWord}
             currentWord={currentWord}
-            isGameWon={completed}
+            completed={completed}
             numGuesses={numGuesses}
             gridInput={gridInput}
             hintIndex={hintIndex}
+			handleNewGamePress={handleNewGamePress}
           />
 		  </Modal>
         )}
@@ -374,11 +398,14 @@ const AppUnstyled = ({ className, maxGuesses }) => {
         handleBackspaceClick={handleBackspaceClick}
         handleEnterClick={handleEnterClick}
         revealAnswer={revealAnswer}
-        handleNewGamePress={handleNewGamePress}
+        handleSkipPress={handleSkipPress}
+		handleNewGamePress={handleNewGamePress}
 		useHint={useHint}
 		hintsLeft={hintsLeft}
 		gameStarted={gameStarted}
 		completed={completed}
+		skips={skips}
+		handleShowQuote={handleShowQuote}
       />
     </div>
   );

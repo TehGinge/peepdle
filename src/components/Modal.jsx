@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const ModalUnstyled = ({ className, children, onClose, show }) => {
   const [visible, setVisible] = useState(false);
@@ -20,6 +20,7 @@ const ModalUnstyled = ({ className, children, onClose, show }) => {
     >
       <div className="modal-content">
         <button
+          className="modal-close-button"
           onClick={() => {
             setVisible(false);
             onClose();
@@ -32,7 +33,6 @@ const ModalUnstyled = ({ className, children, onClose, show }) => {
     </div>
   );
 };
-  
 
 export const Modal = styled(ModalUnstyled)`
   position: fixed;
@@ -50,9 +50,9 @@ export const Modal = styled(ModalUnstyled)`
   transition: opacity 0.1s ease, visibility 0.1s ease;
 
   &.visible {
-  opacity: 1 !important;
-  visibility: visible !important;
-}
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
 
   .modal-content {
     background-color: #292929;
@@ -68,11 +68,11 @@ export const Modal = styled(ModalUnstyled)`
   }
 
   &.visible > .modal-content {
-  transform: translateY(0) !important;
-  opacity: 1 !important;
-}
+    transform: translateY(0) !important;
+    opacity: 1 !important;
+  }
 
-button {
+  .modal-close-button {
     position: absolute;
     color: #ffffff;
     top: 5px;
@@ -84,7 +84,7 @@ button {
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   }
 
-  button:hover {
+  .modal-close-button:hover {
     color: #dddddd;
   }
 `;
