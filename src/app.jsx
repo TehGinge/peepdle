@@ -36,10 +36,12 @@ const AppUnstyled = ({ className, maxGuesses }) => {
   );
 
   useEffect(() => {
-    if (isGameWon) {
-      setSkips(skips + 1);
-    }
-  }, [isGameWon]);
+	if (isGameWon) {
+	  if (winStreak % 2 === 0) { // Check if the winStreak is even, so it grants a skip on every two wins
+		setSkips((prevSkips) => prevSkips + 1);
+	  }
+	}
+  }, [isGameWon, winStreak]);
 
   // Handle skip button press
   const handleSkipPress = () => {
