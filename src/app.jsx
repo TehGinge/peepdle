@@ -12,6 +12,7 @@ import { WinMessage } from "./components/WinMessage";
 import { Guesses } from "./components/Guesses";
 import { Modal } from "./components/Modal";
 import { Sidebar } from "./components/Sidebar";
+import { Skip } from "./components/Skip";
 
 const AppUnstyled = ({ className, maxGuesses }) => {
   const [currentWord, setCurrentWord] = useState("");
@@ -31,22 +32,25 @@ const AppUnstyled = ({ className, maxGuesses }) => {
   const [gaveUp, setGaveUp] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [skips, setSkips] = useState(5);
+  const [skipEnabled, setSkipEnabled] = useState(false);
   const [gridInput, setGridInput] = useState(
     Array.from({ length: maxGuesses }, () => Array(currentWord.length).fill(""))
   );
 
   useEffect(() => {
-	if (isGameWon) {
-	  if (winStreak % 2 === 0) { // Check if the winStreak is even, so it grants a skip on every two wins
-		setSkips((prevSkips) => prevSkips + 1);
-	  }
-	}
+    if (isGameWon) {
+      if (winStreak % 2 === 0) {
+        // Check if the winStreak is even, so it grants a skip on every two wins
+        setSkips((prevSkips) => prevSkips + 1);
+      }
+    }
   }, [isGameWon, winStreak]);
 
-  // Handle skip button press
   const handleSkipPress = () => {
-    if (skips > 0) {
+    if (!skipEnabled && skips > 0) {
       setSkips(skips - 1);
+      handleNewGamePress();
+    } else if (skipEnabled) {
       handleNewGamePress();
     }
   };
@@ -218,7 +222,7 @@ const AppUnstyled = ({ className, maxGuesses }) => {
   };
 
   const resetStreak = () => {
-    if (winStreak > personalBest) {
+    if (winStreak > personalBest && !skipEnabled) {
       setPersonalBest(winStreak);
     }
     setAchievedStreak(winStreak);
@@ -372,6 +376,8 @@ const AppUnstyled = ({ className, maxGuesses }) => {
         toggleMenu={toggleMenu}
         personalBest={personalBest}
         hamburgerRef={hamburgerRef}
+        skipEnabled={skipEnabled}
+        setSkipEnabled={setSkipEnabled}
       />
       <HeaderContainer
         revealAnswer={revealAnswer}
@@ -440,8 +446,9 @@ const AppUnstyled = ({ className, maxGuesses }) => {
         handleSkipPress={handleSkipPress}
         handleNewGamePress={handleNewGamePress}
         useHint={useHint}
+        skipEnabled={skipEnabled}
         hintsLeft={hintsLeft}
-		hintIndex={hintIndex}
+        hintIndex={hintIndex}
         gameStarted={gameStarted}
         completed={completed}
         skips={skips}

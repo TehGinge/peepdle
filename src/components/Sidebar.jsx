@@ -10,7 +10,9 @@ const SidebarUnstyled = ({
   maxWordLength,
   toggleMenu,
   personalBest,
-  hamburgerRef
+  hamburgerRef,
+  skipEnabled,
+  setSkipEnabled,
 }) => {
   const wrapperRef = useRef();
 
@@ -36,7 +38,7 @@ const SidebarUnstyled = ({
     <div className={`${className} ${menuVisible ? "visible" : ""}`}>
       <div className="sidebar-wrapper" ref={wrapperRef}>
         <div className="number-container-wrapper">
-        <div className="max-word-container">
+          <div className="max-word-container">
             <span className="max-word-label">Max Word Length:</span>
             <input
               type="range"
@@ -44,7 +46,7 @@ const SidebarUnstyled = ({
               max="15"
               value={maxWordLength}
               onChange={(e) => setMaxWordLength(parseInt(e.target.value))}
-              className="slider"
+              className="max-word-slider"
             />
             <span className="max-word-value">{maxWordLength}</span>
           </div>
@@ -61,6 +63,17 @@ const SidebarUnstyled = ({
           <div className="number-container">
             <span className="number-label">Personal Best:</span>
             <span className="number-value">{personalBest}</span>
+          </div>
+          <div className="toggle-container">
+            <span className="toggle-label">Unlimited Mode:</span>
+            <label className="switch">
+              <input
+                type="checkbox"
+                checked={skipEnabled}
+                onChange={(e) => setSkipEnabled(e.target.checked)}
+              />
+              <span className="slider round"></span>
+            </label>
           </div>
         </div>
         <div className="footer">
@@ -184,7 +197,7 @@ export const Sidebar = styled(SidebarUnstyled)`
     color: #ffffff;
   }
 
-  .slider {
+  .max-word-slider {
     width: 100%;
     margin-top: 5px;
     align-items: center;
@@ -209,6 +222,67 @@ export const Sidebar = styled(SidebarUnstyled)`
     font-size: 25px;
     color: #ffffff;
   }
+
+  .toggle-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+  }
+  .toggle-label {
+    margin-right: 10px;
+  }
+
+  .switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #2196f3;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
 
   @media (max-width: 768px) {
     width: 65%;

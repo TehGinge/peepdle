@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Hint } from "./HintButton";
+import { Skip } from "./Skip";
 
 const KeyboardButton = ({ letter, onClick, disabled, customClass }) => {
   return (
@@ -63,7 +64,8 @@ const KeyboardUnstyled = ({
   completed,
   hintIndex,
   skips,
-  handleShowQuote
+  skipEnabled,
+  handleShowQuote,
 }) => {
   const letters = "qwertyuiopasdfghjklzxcvbnm".split("");
   const rows = [
@@ -91,16 +93,17 @@ const KeyboardUnstyled = ({
           hintsLeft={hintsLeft}
           gameStarted={gameStarted}
           completed={completed}
-		  hintIndex={hintIndex}
+          hintIndex={hintIndex}
         />
-        <button
+        <Skip
           className="right-button button"
-          tabIndex={-1}
-          onClick={completed ? handleNewGamePress : handleSkipPress}
-		  disabled={skips === 0 && !completed}
-        >
-          {completed ? "Next Word" : `Skip (${skips})`}
-        </button>
+          handleSkipPress={handleSkipPress}
+          handleNewGamePress={handleNewGamePress}
+          skips={skips}
+          skipEnabled={skipEnabled}
+          gameStarted={gameStarted}
+          completed={completed}
+        />
       </div>
       <div className="keyboard">
         {rows.map((row, index) => (
