@@ -61,6 +61,7 @@ const KeyboardUnstyled = ({
   hintsLeft,
   gameStarted,
   completed,
+  hintIndex,
   skips,
   handleShowQuote
 }) => {
@@ -90,6 +91,7 @@ const KeyboardUnstyled = ({
           hintsLeft={hintsLeft}
           gameStarted={gameStarted}
           completed={completed}
+		  hintIndex={hintIndex}
         />
         <button
           className="right-button button"

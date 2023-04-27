@@ -24,6 +24,7 @@ const HintButton = styled.button`
   text-align: center;
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
+  user-select: none;
 
   &:hover {
     background-color: #4caf50;
@@ -36,13 +37,13 @@ const HintButton = styled.button`
   }
 `;
 
-export const Hint = ({ useHint, hintsLeft, gameStarted, completed }) => {
+export const Hint = ({ useHint, hintsLeft, gameStarted, completed, hintIndex }) => {
   return (
     <HintContainer>
       <HintButton
         tabIndex={-1}
         onClick={useHint}
-        disabled={hintsLeft === 0 || !gameStarted || completed}
+        disabled={hintsLeft === 0 || !gameStarted || completed || hintIndex >= 2}
       >
         Use Hint ({hintsLeft})
       </HintButton>

@@ -441,6 +441,7 @@ const AppUnstyled = ({ className, maxGuesses }) => {
         handleNewGamePress={handleNewGamePress}
         useHint={useHint}
         hintsLeft={hintsLeft}
+		hintIndex={hintIndex}
         gameStarted={gameStarted}
         completed={completed}
         skips={skips}
