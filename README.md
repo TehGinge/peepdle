@@ -4,14 +4,16 @@ Peepdle is an interactive word-guessing game based on Wordle, where players atte
 
 ## How the game works
 
-- You guess a random 5-8 character word from a random Peep Show quote by entering letters into the grid
+- You guess a random 4-8 character word from a random Peep Show quote by entering letters into the grid (the max word length is configurable up to 15)
 - You have 5 guesses
 - If you guess the word correctly, your win streak is increased by 1
 - If you run out of guesses or give up, your win streak is reset
+- You can use Hints to help you guess the word. There is only 2 Hints available per quote: the episode and character.
+- You can use Skips to move on to the next quote if you are stuck. You start with 5, and gain 1 every 2 words guessed correctly.
 
 Your glans isn't red raw after a long game of Peepdle is it?
 
-It is available to play via Github Pages - https://tehginge.github.io/peepdle/
+It is available to play via Github Pages - https://peepdle.dev
 
 ## Installation and Setup
 
