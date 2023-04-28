@@ -10,7 +10,7 @@ export const Skip = ({ handleSkipPress, skips, skipEnabled, gameStarted, complet
           onClick={handleSkipPress}
           disabled={!gameStarted || completed || (!skipEnabled && skips === 0)}
         >
-          {!skipEnabled ? `Skips (${skips})` : "Next Word"}
+          {!skipEnabled ? `Skip (${skips})` : "Next Word"}
         </SkipButton>
       </SkipContainer>
     );
