@@ -378,6 +378,8 @@ const AppUnstyled = ({ className, maxGuesses }) => {
         hamburgerRef={hamburgerRef}
         skipEnabled={skipEnabled}
         setSkipEnabled={setSkipEnabled}
+		winStreak={winStreak}
+		resetStreak={resetStreak}
       />
       <HeaderContainer
         revealAnswer={revealAnswer}

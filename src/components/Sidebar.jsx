@@ -13,6 +13,8 @@ const SidebarUnstyled = ({
   hamburgerRef,
   skipEnabled,
   setSkipEnabled,
+  winStreak,
+  resetStreak
 }) => {
   const wrapperRef = useRef();
 
@@ -33,6 +35,20 @@ const SidebarUnstyled = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [toggleMenu, menuVisible, hamburgerRef]);
+
+  const handleToggleChange = (e) => {
+    if (winStreak >= 1) {
+      const confirmedGiveUp = window.confirm(
+        "The toggle is locked until you give up or lose.\nDo you want to give up and change the mode?"
+      );
+      if (confirmedGiveUp) {
+        resetStreak();
+        setSkipEnabled(e.target.checked);
+      }
+    } else {
+      setSkipEnabled(e.target.checked);
+    }
+  };
 
   return (
     <div className={`${className} ${menuVisible ? "visible" : ""}`}>
@@ -70,7 +86,7 @@ const SidebarUnstyled = ({
               <input
                 type="checkbox"
                 checked={skipEnabled}
-                onChange={(e) => setSkipEnabled(e.target.checked)}
+                onChange={handleToggleChange}
               />
               <span className="slider round"></span>
             </label>
