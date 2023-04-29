@@ -10,6 +10,7 @@ const QuoteWrapper = styled.div`
   padding: 10px;
   margin-top: 20px;
   text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 `;
 
 const WinMessageUnstyled = ({
@@ -22,7 +23,8 @@ const WinMessageUnstyled = ({
   gridInput,
   handleNewGamePress,
   winStreak,
-  achievedStreak
+  achievedStreak,
+  isGameWon
 }) => {
   const renderGif = (numGuesses, gridInput, gaveUp) => {
     if (gaveUp) {
@@ -36,7 +38,7 @@ const WinMessageUnstyled = ({
       {!gaveUp && <div className="win-message"></div>}
       {renderGif(numGuesses, gridInput, gaveUp)}
       {currentQuote && (currentQuote.quote || currentQuote.episode) && (
-        <QuoteWrapper>
+        <QuoteWrapper isGameWon={isGameWon} gaveUp={gaveUp}>
           {currentQuote.quote && (
             <div className="full-quote">
               <span>
@@ -48,6 +50,13 @@ const WinMessageUnstyled = ({
                         key={index}
                         style={{
                           fontWeight: "bold",
+                          color: isGameWon ? "lawngreen" : gaveUp ? "red" : "inherit",
+                          display: "inline-flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          padding: "0 1px",
+                          borderRadius: "3px",
+                          margin: "0 1px",
                         }}
                       >
                         {part.text}
@@ -104,6 +113,7 @@ export const WinMessage = styled(WinMessageUnstyled)`
     max-width: 100%;
     max-height: 200px;
     object-fit: contain;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
 
   .next-word {
@@ -128,7 +138,7 @@ export const WinMessage = styled(WinMessageUnstyled)`
     background-color: rgb(49, 48, 48);
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    padding: 3.5px 3px;
+    padding: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
 

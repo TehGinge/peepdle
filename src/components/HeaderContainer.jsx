@@ -67,6 +67,7 @@ export const HeaderContainer = styled(HeaderUnstyled)`
     border-radius: 5px;
     padding: 3.5px 3px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    width: 56px;
   }
 
   .win-tally-label {
@@ -99,7 +100,7 @@ export const HeaderContainer = styled(HeaderUnstyled)`
   .hamburger-icon {
     transition: transform 0.3s ease;
     position: relative;
-    width: 41px;
+    width: 42px;
     height: 20px;
   }
 
@@ -114,6 +115,7 @@ export const HeaderContainer = styled(HeaderUnstyled)`
     cursor: pointer;
     z-index: 100;
     user-select: none;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 2px 4px;
   }
 
   .bar {

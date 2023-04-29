@@ -12,7 +12,6 @@ import { WinMessage } from "./components/WinMessage";
 import { Guesses } from "./components/Guesses";
 import { Modal } from "./components/Modal";
 import { Sidebar } from "./components/Sidebar";
-import { Skip } from "./components/Skip";
 
 const AppUnstyled = ({ className, maxGuesses }) => {
   const [currentWord, setCurrentWord] = useState("");
@@ -365,6 +364,8 @@ const AppUnstyled = ({ className, maxGuesses }) => {
     setMenuVisible(!menuVisible);
   };
 
+  const [showUnlimitedModal, setShowUnlimitedModal] = useState(false);
+
   return (
     <div className={className}>
       <Sidebar
@@ -376,10 +377,13 @@ const AppUnstyled = ({ className, maxGuesses }) => {
         toggleMenu={toggleMenu}
         personalBest={personalBest}
         hamburgerRef={hamburgerRef}
+		setSkips={setSkips}
         skipEnabled={skipEnabled}
         setSkipEnabled={setSkipEnabled}
 		winStreak={winStreak}
 		resetStreak={resetStreak}
+		showUnlimitedModal={showUnlimitedModal}
+		setShowUnlimitedModal={setShowUnlimitedModal}
       />
       <HeaderContainer
         revealAnswer={revealAnswer}
@@ -434,6 +438,7 @@ const AppUnstyled = ({ className, maxGuesses }) => {
               handleNewGamePress={handleNewGamePress}
               winStreak={winStreak}
               achievedStreak={achievedStreak}
+			  isGameWon={isGameWon}
             />
           </Modal>
         )}

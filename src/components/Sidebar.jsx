@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import styled from "styled-components";
+import { UnlimitedModal } from './UnlimitedModal';
 
 const SidebarUnstyled = ({
   className,
@@ -14,7 +15,10 @@ const SidebarUnstyled = ({
   skipEnabled,
   setSkipEnabled,
   winStreak,
-  resetStreak
+  resetStreak,
+  showUnlimitedModal,
+  setShowUnlimitedModal,
+  setSkips,
 }) => {
   const wrapperRef = useRef();
 
@@ -38,16 +42,21 @@ const SidebarUnstyled = ({
 
   const handleToggleChange = (e) => {
     if (winStreak >= 1) {
-      const confirmedGiveUp = window.confirm(
-        "The toggle is locked until you give up or lose.\nDo you want to give up and change the mode?"
-      );
-      if (confirmedGiveUp) {
-        resetStreak();
-        setSkipEnabled(e.target.checked);
-      }
+      setShowUnlimitedModal(true);
     } else {
       setSkipEnabled(e.target.checked);
     }
+  };
+
+  const handleGiveUp = () => {
+    resetStreak();
+    setSkips(5);
+    setSkipEnabled(!skipEnabled);
+    setShowUnlimitedModal(false);
+  };
+
+  const handleCloseModal = () => {
+    setShowUnlimitedModal(false);
   };
 
   return (
@@ -81,6 +90,13 @@ const SidebarUnstyled = ({
             <span className="number-value">{personalBest}</span>
           </div>
           <div className="toggle-container">
+            {showUnlimitedModal && (
+              <UnlimitedModal
+              className={showUnlimitedModal ? 'visible' : ''}
+              handleGiveUp={handleGiveUp}
+              handleCloseModal={handleCloseModal}
+              />
+            )}
             <span className="toggle-label">Unlimited Mode:</span>
             <label className="switch">
               <input
@@ -157,10 +173,11 @@ export const Sidebar = styled(SidebarUnstyled)`
   .footer {
     width: 100%;
     margin-top: auto;
-    font-size: 18px;
+    font-size: 15px;
     text-align: center;
     border-radius: 5px;
     background-color: rgb(49, 48, 48);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
 
   .footer a {
@@ -209,7 +226,7 @@ export const Sidebar = styled(SidebarUnstyled)`
     background-color: rgb(78, 78, 78);
     border-radius: 10px;
     padding: 2px 6px;
-    font-size: 25px;
+    font-size: 22px;
     color: #ffffff;
   }
 
@@ -224,7 +241,8 @@ export const Sidebar = styled(SidebarUnstyled)`
     flex-direction: column-reverse;
     flex-grow: 1;
     width: 100%;
-    height: calc(100% - 20px); // Subtract the footer's margin-top
+    height: calc(100% - 20px);
+    font-size: 19px;
   }
 
   .number-label {
@@ -235,7 +253,7 @@ export const Sidebar = styled(SidebarUnstyled)`
     background-color: rgb(78, 78, 78);
     border-radius: 10px;
     padding: 2px 6px;
-    font-size: 25px;
+    font-size: 22px;
     color: #ffffff;
   }
 
@@ -250,55 +268,55 @@ export const Sidebar = styled(SidebarUnstyled)`
   }
 
   .switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-}
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
 
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
 
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  transition: 0.4s;
-}
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+  }
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: 0.4s;
-}
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+  }
 
-input:checked + .slider {
-  background-color: #2196f3;
-}
+  input:checked + .slider {
+    background-color: #2196f3;
+  }
 
-input:checked + .slider:before {
-  transform: translateX(26px);
-}
+  input:checked + .slider:before {
+    transform: translateX(26px);
+  }
 
-.slider.round {
-  border-radius: 34px;
-}
+  .slider.round {
+    border-radius: 34px;
+  }
 
-.slider.round:before {
-  border-radius: 50%;
-}
+  .slider.round:before {
+    border-radius: 50%;
+  }
 
   @media (max-width: 768px) {
     width: 65%;
