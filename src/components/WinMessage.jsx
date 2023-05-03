@@ -24,7 +24,8 @@ const WinMessageUnstyled = ({
   handleNewGamePress,
   winStreak,
   achievedStreak,
-  isGameWon
+  isGameWon,
+  personalBest,
 }) => {
   const renderGif = (numGuesses, gridInput, gaveUp) => {
     if (gaveUp) {
@@ -35,6 +36,10 @@ const WinMessageUnstyled = ({
 
   return (
     <div className={className}>
+      <div className="personal-best">
+        <span className="number-label">Personal Best:</span>
+        <span className="number-value">{personalBest}</span>
+      </div>
       {!gaveUp && <div className="win-message"></div>}
       {renderGif(numGuesses, gridInput, gaveUp)}
       {currentQuote && (currentQuote.quote || currentQuote.episode) && (
@@ -50,7 +55,11 @@ const WinMessageUnstyled = ({
                         key={index}
                         style={{
                           fontWeight: "bold",
-                          color: isGameWon ? "lawngreen" : gaveUp ? "red" : "inherit",
+                          color: isGameWon
+                            ? "lawngreen"
+                            : gaveUp
+                            ? "red"
+                            : "inherit",
                           display: "inline-flex",
                           justifyContent: "center",
                           alignItems: "center",
@@ -109,9 +118,27 @@ export const WinMessage = styled(WinMessageUnstyled)`
     text-align: center;
   }
 
+  .personal-best {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #ffffff;
+  }
+
+  .number-label {
+    font-weight: bold;
+    margin-right: 5px;
+  }
+
+  .number-value {
+    font-weight: bold;
+    color: lawngreen;
+  }
+
   img {
     max-width: 100%;
-    max-height: 200px;
     object-fit: contain;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
@@ -148,7 +175,7 @@ export const WinMessage = styled(WinMessageUnstyled)`
   }
 
   .win-tally-counter {
-    color: #ffffff;
+    color: lawngreen;
     font-size: 16px;
     font-weight: bold;
     padding-bottom: 5px;
