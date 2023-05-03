@@ -33,38 +33,53 @@ const GridInputUnstyled = ({ className, gridInput, currentWord, numGuesses, isGa
 		};
 	}, [handleKeyboardClick, handleBackspaceClick, handleEnterClick, rootRef]);
 
-	return (
+	function countOccurrences(word, letter) {
+		return word.split('').filter((c) => c.toLowerCase() === letter.toLowerCase()).length;
+	  }
+	  
+	  return (
 		<div className={className} tabIndex={-1} ref={rootRef}>
-			{gridInput.map((row, rowIndex) => (
-				<div className="grid-input-row" key={`row-${rowIndex}`}>
-					{row.map((cell, colIndex) => {
-						const currentLetter = gridInput[rowIndex][colIndex];
-						let gridCellStyle = "";
-
-						if (rowIndex < numGuesses) {
-							if (currentLetter.toLowerCase() === currentWord[colIndex].toLowerCase()) {
-								gridCellStyle = "correct-position";
-							} else if (currentWord.toLowerCase().includes(currentLetter.toLowerCase())) {
-								gridCellStyle = "in-word";
-							} else {
-								gridCellStyle = "not-in-word";
-							}
-						} else if (isGameWon) {
-							if (currentLetter.toLowerCase() === currentWord[colIndex].toLowerCase()) {
-								gridCellStyle = "correct-position";
-							}
-						}
-
-						return (
-							<div key={`${rowIndex} | ${colIndex}`} className={`grid-input-cell ${gridCellStyle}`} ref={inputRefs[rowIndex][colIndex]} disabled={rowIndex !== numGuesses} data-columns={colIndex}>
-								{cell}
-							</div>
-						);
-					})}
-				</div>
-			))}
+		  {gridInput.map((row, rowIndex) => (
+			<div className="grid-input-row" key={`row-${rowIndex}`}>
+			  {row.map((cell, colIndex) => {
+				const currentLetter = gridInput[rowIndex][colIndex];
+				let gridCellStyle = "";
+	  
+				if (rowIndex < numGuesses) {
+				  const guessedLetterCount = countOccurrences(gridInput[rowIndex].join(''), currentLetter);
+				  const correctLetterCount = countOccurrences(currentWord, currentLetter);
+	  
+				  if (currentLetter.toLowerCase() === currentWord[colIndex].toLowerCase()) {
+					gridCellStyle = "correct-position";
+				  } else if (
+					currentWord.toLowerCase().includes(currentLetter.toLowerCase()) &&
+					guessedLetterCount <= correctLetterCount
+				  ) {
+					if (currentWord[colIndex].toLowerCase() !== currentLetter.toLowerCase()) {
+					  gridCellStyle = "in-word";
+					} else {
+					  gridCellStyle = "not-in-word";
+					}
+				  } else {
+					gridCellStyle = "not-in-word";
+				  }
+				} else if (isGameWon) {
+				  if (currentLetter.toLowerCase() === currentWord[colIndex].toLowerCase()) {
+					gridCellStyle = "correct-position";
+				  }
+				}
+	  
+				return (
+				  <div key={`${rowIndex} | ${colIndex}`} className={`grid-input-cell ${gridCellStyle}`} ref={inputRefs[rowIndex][colIndex]} disabled={rowIndex !== numGuesses} data-columns={colIndex}>
+					{cell}
+				  </div>
+				);
+			  })}
+			</div>
+		  ))}
 		</div>
-	);
+	  );
+	  
 };
 
 const GridInput = styled(GridInputUnstyled)`

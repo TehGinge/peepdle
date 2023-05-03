@@ -377,13 +377,13 @@ const AppUnstyled = ({ className, maxGuesses }) => {
         toggleMenu={toggleMenu}
         personalBest={personalBest}
         hamburgerRef={hamburgerRef}
-		setSkips={setSkips}
+        setSkips={setSkips}
         skipEnabled={skipEnabled}
         setSkipEnabled={setSkipEnabled}
-		winStreak={winStreak}
-		resetStreak={resetStreak}
-		showUnlimitedModal={showUnlimitedModal}
-		setShowUnlimitedModal={setShowUnlimitedModal}
+        winStreak={winStreak}
+        resetStreak={resetStreak}
+        showUnlimitedModal={showUnlimitedModal}
+        setShowUnlimitedModal={setShowUnlimitedModal}
       />
       <HeaderContainer
         revealAnswer={revealAnswer}
@@ -438,7 +438,8 @@ const AppUnstyled = ({ className, maxGuesses }) => {
               handleNewGamePress={handleNewGamePress}
               winStreak={winStreak}
               achievedStreak={achievedStreak}
-			  isGameWon={isGameWon}
+              isGameWon={isGameWon}
+              personalBest={personalBest}
             />
           </Modal>
         )}
@@ -490,21 +491,41 @@ function ResetKeyboardButtonStyles() {
   });
 }
 
+function countOccurrences(word, letter) {
+  return word.split("").filter((c) => c.toLowerCase() === letter.toLowerCase())
+    .length;
+}
+
 function SetKeyboardButtonStyles(guessedWord, correctWord) {
   GetKeyboardButtons().forEach((button) => {
     const letter = button.innerText.toLowerCase();
-    const letterInCurrentWordIndex = correctWord.toLowerCase().indexOf(letter);
     if (guessedWord.includes(letter)) {
       let buttonClass = "not-in-word";
+
       if (correctWord.includes(letter)) {
-        if (
-          letterInCurrentWordIndex === guessedWord.toLowerCase().indexOf(letter)
-        ) {
+        const guessedLetterCount = countOccurrences(guessedWord, letter);
+        const correctLetterCount = countOccurrences(correctWord, letter);
+
+        const correctPositionsInGuessedWord = guessedWord
+          .toLowerCase()
+          .split("")
+          .map(
+            (c, i) => c === letter && correctWord[i].toLowerCase() === letter
+          )
+          .filter(Boolean).length;
+
+        if (correctPositionsInGuessedWord >= correctLetterCount) {
           buttonClass = "correct-position";
-        } else {
+        } else if (guessedLetterCount > correctLetterCount) {
           buttonClass = "in-word";
+        } else {
+          buttonClass =
+            correctPositionsInGuessedWord >= guessedLetterCount
+              ? "correct-position"
+              : "in-word";
         }
       }
+
       button.className = `keyboard-button ${buttonClass}`;
     }
   });
