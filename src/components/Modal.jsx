@@ -18,9 +18,7 @@ const ModalUnstyled = ({ className, children, onClose, show }) => {
         }
       }}
     >
-      <div className="modal-content">
-        {children}
-      </div>
+      <div className="modal-content">{children}</div>
     </div>
   );
 };
@@ -63,5 +61,4 @@ export const Modal = styled(ModalUnstyled)`
     transform: translateY(0) !important;
     opacity: 1 !important;
   }
-
 `;

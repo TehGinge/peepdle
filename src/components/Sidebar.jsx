@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import styled from "styled-components";
-import { UnlimitedModal } from './UnlimitedModal';
+import { UnlimitedModal } from "./UnlimitedModal";
+import githubLogo from "../assets/github-mark-white.png";
 
 const SidebarUnstyled = ({
   className,
@@ -50,7 +51,7 @@ const SidebarUnstyled = ({
 
   const handleGiveUp = () => {
     resetStreak();
-    setSkips(5);
+    setSkips(3);
     setSkipEnabled(!skipEnabled);
     setShowUnlimitedModal(false);
   };
@@ -92,9 +93,9 @@ const SidebarUnstyled = ({
           <div className="toggle-container">
             {showUnlimitedModal && (
               <UnlimitedModal
-              className={showUnlimitedModal ? 'visible' : ''}
-              handleGiveUp={handleGiveUp}
-              handleCloseModal={handleCloseModal}
+                className={showUnlimitedModal ? "visible" : ""}
+                handleGiveUp={handleGiveUp}
+                handleCloseModal={handleCloseModal}
               />
             )}
             <span className="toggle-label">Unlimited Mode:</span>
@@ -110,15 +111,40 @@ const SidebarUnstyled = ({
         </div>
         <div className="footer">
           <a
+            className="github-link"
             href="https://github.com/TehGinge/peepdle"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Made by TehGinge - view on Github
+            <span>by TehGinge</span>
+            <img
+              className="github-logo"
+              src={githubLogo}
+              alt="GitHub"
+              width="12"
+              height="12"
+            />
           </a>
           <div className="credits">
             <p>Credit to:</p>
             <ul>
+              <li>
+                <a
+                  className="github-link"
+                  href="https://github.com/tomaustin700/PeepQuote"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  PeepQuote API
+                  <img
+                    className="github-logo"
+                    src={githubLogo}
+                    alt="GitHub"
+                    width="12"
+                    height="12"
+                  />
+                </a>
+              </li>
               <li>
                 <a
                   href="https://peepshow.gifglobe.com/"
@@ -126,15 +152,6 @@ const SidebarUnstyled = ({
                   rel="noopener noreferrer"
                 >
                   Peep Show GifGlobe
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://github.com/tomaustin700/PeepQuote"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  PeepQuote API
                 </a>
               </li>
             </ul>
@@ -172,31 +189,50 @@ export const Sidebar = styled(SidebarUnstyled)`
 
   .footer {
     width: 100%;
+    height: 120px;
     margin-top: auto;
-    font-size: 15px;
+    font-size: 14px;
     text-align: center;
     border-radius: 5px;
     background-color: rgb(49, 48, 48);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
 
+  .img {
+    padding: 100px;
+  }
+
   .footer a {
     color: #0099ff;
     text-decoration: none;
+    transition: color 0.3s ease;
   }
 
   .footer a:hover {
-    text-decoration: underline;
+    color: #00ccff;
+  }
+
+  .github-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .github-logo {
+    padding: 5px;
+  }
+
+  .credits .github-logo {
+    padding: 5px;
   }
 
   .credits ul {
+    padding-left: 0;
     list-style-type: none;
-    padding: 0;
-    margin: 0;
   }
 
   .credits li {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
   }
 
   .number-container {

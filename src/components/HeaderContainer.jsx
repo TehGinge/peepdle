@@ -65,14 +65,16 @@ export const HeaderContainer = styled(HeaderUnstyled)`
     align-items: center;
     background-color: rgb(49, 48, 48);
     border-radius: 5px;
-    padding: 3.5px 3px;
+    padding: 2.5px 2px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     width: 56px;
+    min-height: 35px;
+    justify-content: flex-end
   }
 
   .win-tally-label {
     color: #ffffff;
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .win-tally-counter {
@@ -87,6 +89,7 @@ export const HeaderContainer = styled(HeaderUnstyled)`
     align-items: center;
     justify-content: space-evenly;
     flex-wrap: wrap;
+    min-height: 52px;
   }
 
   h1 {
@@ -109,13 +112,16 @@ export const HeaderContainer = styled(HeaderUnstyled)`
   }
 
   .hamburger-menu {
-    padding: 10px;
+    padding: 9px;
     background-color: rgb(49, 48, 48);
     border-radius: 5px;
     cursor: pointer;
     z-index: 100;
     user-select: none;
     box-shadow: rgba(0, 0, 0, 0.3) 0px 2px 4px;
+    min-height: 22px;
+    min-width: 40px;
+    justify-content: flex-end
   }
 
   .bar {

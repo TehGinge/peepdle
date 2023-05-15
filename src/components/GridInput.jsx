@@ -33,52 +33,55 @@ const GridInputUnstyled = ({ className, gridInput, currentWord, numGuesses, isGa
 		};
 	}, [handleKeyboardClick, handleBackspaceClick, handleEnterClick, rootRef]);
 
-	function countOccurrences(word, letter) {
-		return word.split('').filter((c) => c.toLowerCase() === letter.toLowerCase()).length;
-	  }
-	  
-	  return (
-		<div className={className} tabIndex={-1} ref={rootRef}>
-		  {gridInput.map((row, rowIndex) => (
-			<div className="grid-input-row" key={`row-${rowIndex}`}>
-			  {row.map((cell, colIndex) => {
-				const currentLetter = gridInput[rowIndex][colIndex];
-				let gridCellStyle = "";
-	  
-				if (rowIndex < numGuesses) {
-				  const guessedLetterCount = countOccurrences(gridInput[rowIndex].join(''), currentLetter);
-				  const correctLetterCount = countOccurrences(currentWord, currentLetter);
-	  
-				  if (currentLetter.toLowerCase() === currentWord[colIndex].toLowerCase()) {
-					gridCellStyle = "correct-position";
-				  } else if (
-					currentWord.toLowerCase().includes(currentLetter.toLowerCase()) &&
-					guessedLetterCount <= correctLetterCount
-				  ) {
-					if (currentWord[colIndex].toLowerCase() !== currentLetter.toLowerCase()) {
-					  gridCellStyle = "in-word";
-					} else {
-					  gridCellStyle = "not-in-word";
-					}
-				  } else {
-					gridCellStyle = "not-in-word";
-				  }
-				} else if (isGameWon) {
-				  if (currentLetter.toLowerCase() === currentWord[colIndex].toLowerCase()) {
-					gridCellStyle = "correct-position";
-				  }
-				}
-	  
-				return (
-				  <div key={`${rowIndex} | ${colIndex}`} className={`grid-input-cell ${gridCellStyle}`} ref={inputRefs[rowIndex][colIndex]} disabled={rowIndex !== numGuesses} data-columns={colIndex}>
-					{cell}
-				  </div>
-				);
-			  })}
-			</div>
-		  ))}
-		</div>
-	  );
+  // Initialize the counts for each letter in the current word
+  const correctLetterCounts = {};
+  currentWord.split('').forEach((letter) => {
+    correctLetterCounts[letter.toLowerCase()] = (correctLetterCounts[letter.toLowerCase()] || 0) + 1;
+  });
+
+  return (
+    <div className={className} tabIndex={-1} ref={rootRef}>
+      {gridInput.map((row, rowIndex) => (
+        <div className="grid-input-row" key={`row-${rowIndex}`}>
+          {row.map((cell, colIndex) => {
+            const currentLetter = gridInput[rowIndex][colIndex];
+            let gridCellStyle = "";
+  
+            if (rowIndex < numGuesses) {
+              let guessedLetterCounts = {};
+  
+              // Count the occurrences of each letter in the guessed word
+              gridInput[rowIndex].join('').split('').forEach((letter) => {
+                guessedLetterCounts[letter.toLowerCase()] = (guessedLetterCounts[letter.toLowerCase()] || 0) + 1;
+              });
+  
+              if (currentLetter.toLowerCase() === currentWord[colIndex].toLowerCase()) {
+                gridCellStyle = "correct-position";
+              } else if (
+                currentWord.toLowerCase().includes(currentLetter.toLowerCase()) &&
+                guessedLetterCounts[currentLetter.toLowerCase()] <= correctLetterCounts[currentLetter.toLowerCase()]
+              ) {
+                gridCellStyle = "in-word";
+                correctLetterCounts[currentLetter.toLowerCase()]--;
+              } else {
+                gridCellStyle = "not-in-word";
+              }
+            } else if (isGameWon) {
+              if (currentLetter.toLowerCase() === currentWord[colIndex].toLowerCase()) {
+                gridCellStyle = "correct-position";
+              }
+            }
+  
+            return (
+              <div key={`${rowIndex} | ${colIndex}`} className={`grid-input-cell ${gridCellStyle}`} ref={inputRefs[rowIndex][colIndex]} disabled={rowIndex !== numGuesses} data-columns={colIndex}>
+                {cell}
+              </div>
+            );
+          })}
+        </div>
+      ))}
+    </div>
+  );
 	  
 };
 
@@ -87,6 +90,7 @@ const GridInput = styled(GridInputUnstyled)`
 	align-items: center;
 	grid-gap: 1px; // gap between rows
 	justify-content: center;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 
 	.grid-input-row {
 		display: grid;

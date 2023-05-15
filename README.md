@@ -9,11 +9,11 @@ Peepdle is an interactive word-guessing game based on Wordle, where players atte
 - If you guess the word correctly, your win streak is increased by 1
 - If you run out of guesses or give up, your win streak is reset
 - You can use Hints to help you guess the word. There is only 2 Hints available per quote: the episode and character.
-- You can use Skips to move on to the next quote if you are stuck. You start with 5, and gain 1 every 2 words guessed correctly.
+- You can use Skips to move on to the next quote if you are stuck. You start with 3, and gain 1 every 2 words guessed correctly, at a max cap of 5.
 
 Your glans isn't red raw after a long game of Peepdle is it?
 
-It is available to play via Github Pages - https://peepdle.dev
+It is available to play via Github Pages - https://peepdle.uk
 
 ## Installation and Setup
 

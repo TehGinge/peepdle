@@ -132,16 +132,17 @@ export const Keyboard = styled(KeyboardUnstyled)`
     border-radius: 0.25rem;
     transition: background-color 0.1s ease-in-out, color 0.2s ease-in-out;
     user-select: none;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 5px 10px;
   }
 
-  .keyboard-button:hover {
+  /* .keyboard-button:hover {
     background-color: #ffffff;
     color: #000000;
   }
 
   .keyboard-button:active {
     background-color: #ccc;
-  }
+  } */
 
   .correct-position.keyboard-button {
     background-color: green;
@@ -218,6 +219,7 @@ export const Keyboard = styled(KeyboardUnstyled)`
     cursor: pointer;
     transition: background-color 0.2s ease-in-out;
     user-select: none;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
   }
 
   .right-button {

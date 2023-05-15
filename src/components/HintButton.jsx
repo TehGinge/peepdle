@@ -25,6 +25,7 @@ const HintButton = styled.button`
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
   user-select: none;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
 
   &:hover {
     background-color: #4caf50;

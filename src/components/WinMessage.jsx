@@ -26,7 +26,12 @@ const WinMessageUnstyled = ({
   achievedStreak,
   isGameWon,
   personalBest,
+  hintsLeft,
+  skips
 }) => {
+  const wasSkipAdded = isGameWon && !gaveUp && winStreak % 5 === 0 && skips < 5;
+  const wasHintAdded = isGameWon && !gaveUp && winStreak % 2 === 0 && hintsLeft < 10;
+
   const renderGif = (numGuesses, gridInput, gaveUp) => {
     if (gaveUp) {
       return <img src={gameOverGif} alt="Game over" />;
@@ -40,6 +45,7 @@ const WinMessageUnstyled = ({
         <span className="number-label">Personal Best:</span>
         <span className="number-value">{personalBest}</span>
       </div>
+      <div></div>
       {!gaveUp && <div className="win-message"></div>}
       {renderGif(numGuesses, gridInput, gaveUp)}
       {currentQuote && (currentQuote.quote || currentQuote.episode) && (
@@ -88,6 +94,16 @@ const WinMessageUnstyled = ({
         <div className="win-tally-counter">
           {gaveUp ? achievedStreak : winStreak}
         </div>
+        {wasSkipAdded && (
+          <p>
+            <span>+1</span> Skip
+          </p>
+        )}
+        {wasHintAdded && (
+          <p>
+            <span>+1</span> Hint
+          </p>
+        )}
         <button
           className="next-word"
           tabIndex={-1}
@@ -122,7 +138,7 @@ export const WinMessage = styled(WinMessageUnstyled)`
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     font-size: 14px;
     color: #ffffff;
   }
@@ -169,9 +185,22 @@ export const WinMessage = styled(WinMessageUnstyled)`
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
 
+  .win-tally span {
+    color: lawngreen;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .win-tally p {
+    margin: 4px 0;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
   .win-tally-label {
     color: #ffffff;
-    font-size: 12px;
+    font-size: 14px;
+    font-weight: bold;
   }
 
   .win-tally-counter {
@@ -181,8 +210,4 @@ export const WinMessage = styled(WinMessageUnstyled)`
     padding-bottom: 5px;
   }
 
-  @media (max-width: 480px) {
-    margin-top: 10px;
-    margin-bottom: 10px;
-  }
 `;

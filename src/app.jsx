@@ -12,6 +12,7 @@ import { WinMessage } from "./components/WinMessage";
 import { Guesses } from "./components/Guesses";
 import { Modal } from "./components/Modal";
 import { Sidebar } from "./components/Sidebar";
+import Explosion from "react-confetti-explosion";
 
 const AppUnstyled = ({ className, maxGuesses }) => {
   const [currentWord, setCurrentWord] = useState("");
@@ -30,20 +31,29 @@ const AppUnstyled = ({ className, maxGuesses }) => {
   const [maxWordLength, setMaxWordLength] = useState(8); // Set maximum word length
   const [gaveUp, setGaveUp] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [skips, setSkips] = useState(5);
+  const [skips, setSkips] = useState(3);
   const [skipEnabled, setSkipEnabled] = useState(false);
+  const [explode, setExplode] = useState(false);
   const [gridInput, setGridInput] = useState(
     Array.from({ length: maxGuesses }, () => Array(currentWord.length).fill(""))
   );
 
   useEffect(() => {
     if (isGameWon) {
-      if (winStreak % 2 === 0) {
-        // Check if the winStreak is even, so it grants a skip on every two wins
-        setSkips((prevSkips) => prevSkips + 1);
+      if (winStreak % 5 === 0) {
+        // Check if the winStreak is a multiple of 5, so it grants a skip on every five wins
+        setSkips((prevSkips) => (prevSkips < 5 ? prevSkips + 1 : prevSkips)); // Ensure skips don't exceed 5
       }
     }
   }, [isGameWon, winStreak]);
+
+  useEffect(() => {
+    if (isGameWon) {
+      setExplode(true);
+      // Reset the explosion state after it has been triggered
+      setTimeout(() => setExplode(false), 3000);
+    }
+  }, [isGameWon]);
 
   const handleSkipPress = () => {
     if (!skipEnabled && skips > 0) {
@@ -63,28 +73,22 @@ const AppUnstyled = ({ className, maxGuesses }) => {
   }, [currentWord]);
 
   useEffect(() => {
-    const personalBestCookieValue = document.cookie.replace(
-      /(?:(?:^|.*;\s*)personalBest\s*\=\s*([^;]*).*$)|^.*$/,
-      "$1"
-    );
-    setPersonalBest(parseInt(personalBestCookieValue) || 0);
+    const personalBestLocalStorageValue = localStorage.getItem('personalBest');
+    setPersonalBest(parseInt(personalBestLocalStorageValue) || 0);
   }, []);
-
+  
   useEffect(() => {
-    document.cookie = `personalBest=${personalBest}`;
+    localStorage.setItem('personalBest', personalBest.toString());
   }, [personalBest]);
-
+  
   useEffect(() => {
-    const winStreakCookieValue = document.cookie.replace(
-      /(?:(?:^|.*;\s*)winStreak\s*\=\s*([^;]*).*$)|^.*$/,
-      "$1"
-    );
-    setWinStreak(parseInt(winStreakCookieValue) || 0);
+    const winStreakLocalStorageValue = localStorage.getItem('winStreak');
+    setWinStreak(parseInt(winStreakLocalStorageValue) || 0);
   }, []);
-
+  
   useEffect(() => {
-    document.cookie = `winStreak=${winStreak}`;
-  }, [winStreak]);
+    localStorage.setItem('winStreak', winStreak.toString());
+  }, [winStreak]);  
 
   useEffect(() => {
     startNewGame();
@@ -216,7 +220,7 @@ const AppUnstyled = ({ className, maxGuesses }) => {
       setGaveUp(true);
       setShowModal(true);
       resetStreak();
-      setSkips(5);
+      setSkips(3);
     }
   };
 
@@ -239,9 +243,19 @@ const AppUnstyled = ({ className, maxGuesses }) => {
   useEffect(() => {
     if (completed && !gaveUp) {
       setHintIndex(0);
-      setHintsLeft((prevHintsLeft) => prevHintsLeft + 1);
+      if (winStreak % 2 === 0) {
+        // Check if the winStreak is even, so it grants a hint on every two wins
+        setHintsLeft((prevHintsLeft) => {
+          const newHintsLeft = prevHintsLeft + 1;
+          // Ensure hintsLeft never exceeds 10
+          return newHintsLeft > 10 ? 10 : newHintsLeft;
+        });
+      }
+    } else if (completed && gaveUp) {
+      setHintIndex(0);
+      setHintsLeft(2); // On give up, reset hints
     }
-  }, [completed, gaveUp]);
+  }, [completed, gaveUp, winStreak]); 
 
   const highlightCurrentWord = (quote, word) => {
     const quoteWords = quote.split(/(\s+)/);
@@ -368,6 +382,21 @@ const AppUnstyled = ({ className, maxGuesses }) => {
 
   return (
     <div className={className}>
+      {explode && (
+        <Explosion
+        force={0.7}
+        duration={3000}
+        width={1700}
+        particleCount={130}
+          style={{
+            position: "fixed",
+            top: "30%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            zIndex: 9999,
+          }}
+        />
+      )}
       <Sidebar
         menuVisible={menuVisible}
         totalEligibleWordsCount={totalEligibleWordsCount}
@@ -425,7 +454,11 @@ const AppUnstyled = ({ className, maxGuesses }) => {
           gaveUp={gaveUp}
         />
         {gameStarted && completed && showModal && (
-          <Modal onClose={() => setShowModal(false)} show={showModal}>
+          <Modal
+            onClose={() => setShowModal(false)}
+            show={showModal}
+            explode={explode}
+          >
             <WinMessage
               gaveUp={gaveUp}
               currentQuote={currentQuote}
@@ -440,6 +473,8 @@ const AppUnstyled = ({ className, maxGuesses }) => {
               achievedStreak={achievedStreak}
               isGameWon={isGameWon}
               personalBest={personalBest}
+              skips={skips}
+              hintsLeft={hintsLeft}
             />
           </Modal>
         )}
