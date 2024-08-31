@@ -35,6 +35,17 @@ npm start
 ```
 5. Open your browser and go to http://localhost:9000
 
+## Running Cypress Tests
+
+To test against the changes you are making, firstly run
+```
+npm run build
+```
+Then run:
+```
+npm test
+```
+
 ## Contributing
 Feel free to open issues and submit pull requests to contribute to the project - all contributions are welcome!
 
