@@ -1,9 +1,7 @@
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { Keyboard } from "./components/Keyboard";
-import { useEffect } from "react";
-import { useLayoutEffect } from "react";
-// import { CurrentWordDisplay } from "./main";
-import quotes from "./peepdle-data.json";
+import { CurrentWordDisplay } from "./main";
+import quotes from "./peepdle-data-v3.json";
 import excludedWords from "./excludedWords";
 import styled from "styled-components";
 import { HeaderContainer } from "./components/HeaderContainer";
@@ -37,6 +35,7 @@ const AppUnstyled = ({ className, maxGuesses }) => {
   const [gridInput, setGridInput] = useState(
     Array.from({ length: maxGuesses }, () => Array(currentWord.length).fill(""))
   );
+  
 
   useEffect(() => {
     if (isGameWon) {
@@ -73,22 +72,22 @@ const AppUnstyled = ({ className, maxGuesses }) => {
   }, [currentWord]);
 
   useEffect(() => {
-    const personalBestLocalStorageValue = localStorage.getItem('personalBest');
+    const personalBestLocalStorageValue = localStorage.getItem("personalBest");
     setPersonalBest(parseInt(personalBestLocalStorageValue) || 0);
   }, []);
-  
+
   useEffect(() => {
-    localStorage.setItem('personalBest', personalBest.toString());
+    localStorage.setItem("personalBest", personalBest.toString());
   }, [personalBest]);
-  
+
   useEffect(() => {
-    const winStreakLocalStorageValue = localStorage.getItem('winStreak');
+    const winStreakLocalStorageValue = localStorage.getItem("winStreak");
     setWinStreak(parseInt(winStreakLocalStorageValue) || 0);
   }, []);
-  
+
   useEffect(() => {
-    localStorage.setItem('winStreak', winStreak.toString());
-  }, [winStreak]);  
+    localStorage.setItem("winStreak", winStreak.toString());
+  }, [winStreak]);
 
   useEffect(() => {
     startNewGame();
@@ -116,29 +115,29 @@ const AppUnstyled = ({ className, maxGuesses }) => {
   const startNewGame = () => {
     const validQuotes = quotes.results.filter((quoteObj) => {
       const words = processQuote(quoteObj.quote);
-      return quoteObj.quote && words.length > 1; // Exclude quotes with only one word
+      return quoteObj.quote && words.length > 1;
     });
-
+  
     const randomQuote =
       validQuotes[Math.floor(Math.random() * validQuotes.length)];
     const words = processQuote(randomQuote.quote);
-
+  
     const excludedWordSet = new Set(
       excludedWords.map((word) => word.toLowerCase())
     );
-
+  
     const filteredWords = words.filter(
       (word) =>
         !excludedWordSet.has(word.toLowerCase()) &&
         word.length >= minWordLength &&
         word.length <= maxWordLength
     );
-
+  
     if (filteredWords.length === 0) {
       startNewGame();
       return;
     }
-
+  
     const selectedWord =
       filteredWords[Math.floor(Math.random() * filteredWords.length)];
     setCurrentWord(selectedWord.toLowerCase());
@@ -255,7 +254,7 @@ const AppUnstyled = ({ className, maxGuesses }) => {
       setHintIndex(0);
       setHintsLeft(2); // On give up, reset hints
     }
-  }, [completed, gaveUp, winStreak]); 
+  }, [completed, gaveUp, winStreak]);
 
   const highlightCurrentWord = (quote, word) => {
     const quoteWords = quote.split(/(\s+)/);
@@ -384,10 +383,10 @@ const AppUnstyled = ({ className, maxGuesses }) => {
     <div className={className}>
       {explode && (
         <Explosion
-        force={0.7}
-        duration={3000}
-        width={1700}
-        particleCount={130}
+          force={0.7}
+          duration={3000}
+          width={1700}
+          particleCount={130}
           style={{
             position: "fixed",
             top: "30%",
@@ -427,6 +426,7 @@ const AppUnstyled = ({ className, maxGuesses }) => {
         hamburgerRef={hamburgerRef}
         menuVisible={menuVisible}
       />
+      <CurrentWordDisplay currentWord={currentWord} />
       <div className="centered-container">
         {currentQuote && currentQuote.quote && (
           <Quote
