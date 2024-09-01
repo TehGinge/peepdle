@@ -35,7 +35,7 @@ export const maxGuesses = 5;
 
 // Only for debug use - remove later
 export const CurrentWordDisplay = ({ currentWord }) => {
-	return <div id="current-word-display">Current Word: {currentWord}</div>;
+  return <div id="game-container" data-current-word={currentWord} style={{ display: 'none' }}></div>;
 };
 
 const container = document.getElementById("root");
