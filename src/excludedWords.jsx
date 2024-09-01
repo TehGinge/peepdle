@@ -137,6 +137,8 @@ const excludedWords = [
   "not",
   "don",
   "all",
+  "alan",
+  "alans",
   "mark",
   "marks",
   "jeremy",
@@ -232,7 +234,8 @@ const excludedWords = [
   "need",
   "fine",
   "wait",
-  "weve"
+  "weve",
+  "itll"
 ];
 
 export default excludedWords;
